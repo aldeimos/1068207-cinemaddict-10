@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Александр Демченко](https://up.htmlacademy.ru/ecmascript/10/user/1068207).
-* Наставник: `Неизвестно`.
+* Наставник: [Магомед Кандаев](https://up.htmlacademy.ru/ecmascript/10/user/161600).
 
 ---
 
