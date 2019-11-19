@@ -10,7 +10,7 @@ const createSearchFormTemplate = () => {
     <button type="submit" class="visually-hidden">Search</button>
     <button class="search__reset" type="reset">Reset</button>
   </form>
-  `)
+  `);
 };
 
 const createUserProfileTemplate = () => {
