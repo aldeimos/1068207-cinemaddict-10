@@ -1,4 +1,6 @@
 'use strict';
+const TOTAL_AMOUNT_CARDS = 5;
+const EXTRA_LIST_AMOUNT_CARDS = 2;
 
 const createSearchFormTemplate = () => {
   return (`
@@ -339,11 +341,13 @@ render(siteMainSection, createFilmsSectionTemplate());
 
 const filmListContainer = document.querySelector(`.films .films-list__container`);
 
-let renderCount = 5;
+const repeat = (cardsAmount, fn) => {
+  Array(cardsAmount).fill(``).forEach(fn);
+};
 
-for (let i = 0; i < renderCount; i++) {
+repeat(TOTAL_AMOUNT_CARDS, () => {
   render(filmListContainer, createFilmCardTemplate());
-}
+});
 
 const filmList = document.querySelector(`.films .films-list`);
 
@@ -352,13 +356,12 @@ render(filmList, createFilmExtraListTemlate(`Most Commented`), `afterend`);
 render(filmList, createFilmExtraListTemlate(`Top Rated`), `afterend`);
 
 
-const extraFilmList = document.querySelectorAll(`.films-list--extra .films-list__container`);
+const extraFilmLists = document.querySelectorAll(`.films-list--extra .films-list__container`);
 
-extraFilmList.forEach((it) => {
-  renderCount = 2;
-  for (let i = 0; i < renderCount; i++) {
-    render(it, createFilmCardTemplate());
-  }
-});
+for (const item of extraFilmLists) {
+  repeat(EXTRA_LIST_AMOUNT_CARDS, () => {
+    render(item, createFilmCardTemplate());
+  });
+}
 
 render(siteMainSection, createFilmDetailsTemplate());
