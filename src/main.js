@@ -5,7 +5,7 @@ import {createSortFormTemplate} from './components/sort-form.js';
 import {createFilmsSectionTemplate} from './components/films-section.js';
 import {createFilmCardTemplate} from './components/film-card.js';
 import {createShowMoreButtonTemplate} from './components/shom-more-button.js';
-import {createFilmExtraListTemlate} from './components/films-sub-section.js';
+import {createFilmExtraListTemplate} from './components/films-sub-section.js';
 import {createFilmDetailsTemplate} from './components/film-details';
 
 
@@ -42,8 +42,8 @@ repeat(TOTAL_AMOUNT_CARDS, () => {
 const filmList = document.querySelector(`.films .films-list`);
 
 render(filmList, createShowMoreButtonTemplate());
-render(filmList, createFilmExtraListTemlate(`Most Commented`), `afterend`);
-render(filmList, createFilmExtraListTemlate(`Top Rated`), `afterend`);
+render(filmList, createFilmExtraListTemplate(`Most Commented`), `afterend`);
+render(filmList, createFilmExtraListTemplate(`Top Rated`), `afterend`);
 
 
 const extraFilmLists = document.querySelectorAll(`.films-list--extra .films-list__container`);
