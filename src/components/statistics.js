@@ -1,3 +1,7 @@
+import {cardsLength, calculateFilmsDuration} from '../mocks/filter.js';
+
+const watchedFilmsDuration = calculateFilmsDuration();
+
 const createStatisticSectionTemplate = () => {
   return (`
   <section class="statistic">
@@ -29,11 +33,11 @@ const createStatisticSectionTemplate = () => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text statistic__item-text_watched-movies">${cardsLength} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${watchedFilmsDuration.hours} <span class="statistic__item-description">h</span> ${watchedFilmsDuration.minutes.toFixed()} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -47,5 +51,6 @@ const createStatisticSectionTemplate = () => {
   </section>
   `);
 };
+
 
 export {createStatisticSectionTemplate};

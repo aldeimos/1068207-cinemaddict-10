@@ -1,6 +1,6 @@
-const createFilmExtraListTemplate = (title) => {
+const createFilmExtraListTemplate = (title, addClass) => {
   return (`
-  <section class="films-list--extra">
+  <section class="films-list--extra ${addClass}">
     <h2 class="films-list__title">${title}</h2>
 
     <div class="films-list__container"></div>
@@ -8,4 +8,6 @@ const createFilmExtraListTemplate = (title) => {
   `);
 };
 
-export {createFilmExtraListTemplate};
+export {
+  createFilmExtraListTemplate
+};
