@@ -107,7 +107,7 @@ render(siteMainSection, createFilmDetailsTemplate(detailedCard));
 
 const showMoreButton = document.querySelector(`.films-list__show-more`);
 
-const onClickShowMoreFilms = () => {
+const onClickShowMoreFilmsButton = () => {
   let filmsToShow = TOTAL_AMOUNT_CARDS - startAmountCards;
   startAmountCards += filmsToShow > 5 ? 5 : filmsToShow;
   filmListContainer.innerHTML = ``;
@@ -117,7 +117,7 @@ const onClickShowMoreFilms = () => {
   }
 }
 
-showMoreButton.addEventListener(`click`, onClickShowMoreFilms);
+showMoreButton.addEventListener(`click`, onClickShowMoreFilmsButton);
 
 const footerStatistic = document.querySelector(`.footer__statistics p`);
 footerStatistic.textContent = `${cards.length} movies inside`;
