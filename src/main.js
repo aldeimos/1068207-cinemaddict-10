@@ -12,6 +12,7 @@ import {generateFilmCards} from './mocks/film-card.js';
 
 const TOTAL_AMOUNT_CARDS = 15;
 const EXTRA_LIST_AMOUNT_CARDS = 2;
+const WATCHED_MOVIES = 15;
 const cards = generateFilmCards(TOTAL_AMOUNT_CARDS);
 const detailedCard = cards[0];
 const siteHeader = document.querySelector(`.header`);
@@ -24,9 +25,9 @@ const render = (container, template, place = `beforeend`) => {
 
 
 render(siteMainSection, createSiteMenuTemplate(cards));
-render(siteMainSection, createStatisticSectionTemplate(cards));
-const watchedMovies = document.querySelector(`.statistic__item-text_watched-movies`).textContent;
-render(siteHeader, createUserProfileTemplate(watchedMovies));
+/* render(siteMainSection, createStatisticSectionTemplate(cards)); */
+/* const watchedMovies = document.querySelector(`.statistic__item-text_watched-movies`).textContent; */
+render(siteHeader, createUserProfileTemplate(WATCHED_MOVIES));
 render(siteMainSection, createSortFormTemplate());
 render(siteMainSection, createFilmsSectionTemplate());
 const filmListContainer = document.querySelector(`.films .films-list__container`);
@@ -45,7 +46,7 @@ const mostCommentedFilmsContainer = document.querySelector(`.films-list--extra-c
 
 const sortByStat = (films, prop) => {
   const [...copiedCards] = films;
-  return copiedCards.sort((a, b) => b[prop] > a[prop] ? 1 : -1);
+  return copiedCards.sort((a, b) => b[prop] - a[prop]);
 };
 
 const renderTopRatedFilms = () => {
@@ -62,7 +63,7 @@ renderTopRatedFilms();
 
 const renderMostCommentedFilms = () => {
   const mostCommentedFilms = sortByStat(cards, `commentsAmount`);
-  const lowCommentsFilms = mostCommentedFilms.filter((it) => (parseInt(it.comments, 10) === 0));
+  const lowCommentsFilms = mostCommentedFilms.filter((it) => it.commentsAmount === 0);
   if (lowCommentsFilms === cards.length) {
     mostCommentedFilmsContainer.remove();
     return;

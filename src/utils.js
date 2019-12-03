@@ -14,21 +14,18 @@ const getRandomArrayItem = (array) => {
 
 const shuffleArray = (arr) => {
   let j;
-  let temp;
   for (let i = arr.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1));
-    temp = arr[j];
-    arr[j] = arr[i];
-    arr[i] = temp;
+    [arr[j], arr[i]] = [arr[i], arr[j]];
   }
   return arr;
 };
 
+const splitString = (str, separator) => {
+  return str.split(`${separator}`);
+};
+
 const getRandomLengthArray = (item, separator, length) => {
-  if (typeof item === typeof `string`) {
-    const array = item.split(`${separator}`);
-    return shuffleArray(array).slice(0, length).join(`${separator}`);
-  }
   return shuffleArray(item).slice(0, length).join(`${separator}`);
 };
 
@@ -37,5 +34,6 @@ export {
   getRandomIntegerFromGap,
   getRandomArrayItem,
   getRandomLengthArray,
-  shuffleArray
+  shuffleArray,
+  splitString
 };

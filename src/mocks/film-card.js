@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray} from '../utils.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString} from '../utils.js';
 import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
 import moment from 'moment';
 
@@ -57,7 +57,7 @@ const generateFilmCard = () => {
   return {
     title,
     subtitle: title,
-    description: getRandomLengthArray(filmsDescription, `. `, 3),
+    description: getRandomLengthArray(splitString(filmsDescription, `. `), `. `, 3),
     poster: `./images/posters/${getRandomArrayItem(filmsPoster)}`,
     genre: getRandomArrayItem(filmsGenre),
     hoursDuration,
