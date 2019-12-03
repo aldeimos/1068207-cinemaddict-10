@@ -1,5 +1,3 @@
-import {
-} from '../mocks/film-card.js';
 const createFilmCardTemplate = (card) => {
   const {
     title,
@@ -9,7 +7,7 @@ const createFilmCardTemplate = (card) => {
     fullDuration,
     year,
     rating,
-    comments,
+    commentsAmount,
   } = card;
   return (`
   <article class="film-card">
@@ -21,8 +19,8 @@ const createFilmCardTemplate = (card) => {
       <span class="film-card__genre">${genre}</span>
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
-    <p class="film-card__description">${description.slice(0, 55)}…</p>
-    <a class="film-card__comments">${comments} comments</a>
+    <p class="film-card__description">${description.slice(0, 39)}…</p>
+    <a class="film-card__comments">${commentsAmount} comments</a>
     <form class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched">Mark as watched</button>

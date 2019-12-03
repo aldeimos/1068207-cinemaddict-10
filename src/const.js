@@ -1,7 +1,7 @@
-const MaxDurationInHours = 3;
-const MaxDurationInMinutes = 59;
+const MAX_DURATION_IN_HOURS = 3;
+const MAX_DURATION_IN_MINUTES = 59;
 
-const countries = [`USA`, `Japan`, `Russia`, `China`, `Canada`, `Czech`, `Germany`];
+const COUNTRIES = [`USA`, `Japan`, `Russia`, `China`, `Canada`, `Czech`, `Germany`];
 const MONTHS = [`January`,
   `February`,
   `March`,
@@ -16,9 +16,12 @@ const MONTHS = [`January`,
   `December`,
 ];
 
+const DATES = [`year`, `month`, `week`, `day`];
+
 export {
-  MaxDurationInHours,
-  MaxDurationInMinutes,
-  countries,
+  MAX_DURATION_IN_HOURS,
+  MAX_DURATION_IN_MINUTES,
+  COUNTRIES,
   MONTHS,
+  DATES
 };

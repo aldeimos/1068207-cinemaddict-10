@@ -8,13 +8,14 @@ const createFilmDetailsTemplate = (filmDetail) => {
     year,
     rating,
     subtitle,
-    countries,
-    months,
+    country,
+    month,
     releaseDay,
-    director,
+    directors,
     writers,
     actors,
     ageRestriction,
+    comments,
   } = filmDetail;
   return (`
   <section class="film-details">
@@ -45,7 +46,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">${director}</td>
+                <td class="film-details__cell">${directors}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
@@ -57,7 +58,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${releaseDay} ${months} ${year}</td>
+                <td class="film-details__cell">${releaseDay} ${month} ${year}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -65,7 +66,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
-                <td class="film-details__cell">${countries}</td>
+                <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Genres</td>
@@ -77,7 +78,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
             </table>
 
             <p class="film-details__film-description">
-              ${description.slice(0, 140)}…
+              ${description.slice(0, 139)}…
             </p>
           </div>
         </div>
@@ -96,61 +97,10 @@ const createFilmDetailsTemplate = (filmDetail) => {
 
       <div class="form-details__bottom-container">
         <section class="film-details__comments-wrap">
-          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+          <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
 
           <ul class="film-details__comments-list">
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/smile.png" width="55" height="55" alt="emoji">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Interesting setting and a good cast</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">Tim Macoveev</span>
-                  <span class="film-details__comment-day">2019/12/31 23:59</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/sleeping.png" width="55" height="55" alt="emoji">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Booooooooooring</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/puke.png" width="55" height="55" alt="emoji">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Very very old. Meh</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">2 days ago</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
-            <li class="film-details__comment">
-              <span class="film-details__comment-emoji">
-                <img src="./images/emoji/angry.png" width="55" height="55" alt="emoji">
-              </span>
-              <div>
-                <p class="film-details__comment-text">Almost two hours? Seriously?</p>
-                <p class="film-details__comment-info">
-                  <span class="film-details__comment-author">John Doe</span>
-                  <span class="film-details__comment-day">Today</span>
-                  <button class="film-details__comment-delete">Delete</button>
-                </p>
-              </div>
-            </li>
+
           </ul>
 
           <div class="film-details__new-comment">
@@ -189,6 +139,32 @@ const createFilmDetailsTemplate = (filmDetail) => {
   `);
 };
 
+const createCommentTemplate = (card) => {
+  const {
+    name,
+    text,
+    date,
+    emoji
+  } = card;
+  return (`
+  <li class="film-details__comment">
+  <span class="film-details__comment-emoji">
+    <img src="${emoji}" width="55" height="55" alt="emoji">
+  </span>
+  <div>
+    <p class="film-details__comment-text">${text}</p>
+    <p class="film-details__comment-info">
+      <span class="film-details__comment-author">${name}</span>
+      <span class="film-details__comment-day">${date}</span>
+      <button class="film-details__comment-delete">Delete</button>
+    </p>
+  </div>
+</li>
+  `);
+};
+
+
 export {
-  createFilmDetailsTemplate
+  createFilmDetailsTemplate,
+  createCommentTemplate
 };

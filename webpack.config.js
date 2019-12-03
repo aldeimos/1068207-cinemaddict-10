@@ -1,4 +1,5 @@
 const path = require(`path`);
+const moment = require(`moment`);
 
 module.exports = {
   mode: `development`,
