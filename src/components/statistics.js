@@ -1,4 +1,20 @@
-const createStatisticSectionTemplate = () => {
+const createStatisticSectionTemplate = (cards) => {
+  const totalFilms = cards.length;
+  let amountTime = 0;
+  cards.forEach((it) => {
+    amountTime += ((it.hoursDuration / 60) + it.minutesDuration);
+  });
+  const calculateFilmsDuration = (duration = amountTime) => {
+    const hours = duration.toFixed();
+    const minutes = 60 * (duration - hours);
+    return {
+      hours,
+      minutes,
+    };
+  };
+
+  const {hours, minutes} = calculateFilmsDuration();
+
   return (`
   <section class="statistic">
     <p class="statistic__rank">
@@ -29,11 +45,11 @@ const createStatisticSectionTemplate = () => {
     <ul class="statistic__text-list">
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">You watched</h4>
-        <p class="statistic__item-text">22 <span class="statistic__item-description">movies</span></p>
+        <p class="statistic__item-text statistic__item-text_watched-movies">${totalFilms} <span class="statistic__item-description">movies</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">130 <span class="statistic__item-description">h</span> 22 <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${hours} <span class="statistic__item-description">h</span> ${minutes.toFixed()} <span class="statistic__item-description">m</span></p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -48,4 +64,7 @@ const createStatisticSectionTemplate = () => {
   `);
 };
 
-export {createStatisticSectionTemplate};
+
+export {
+  createStatisticSectionTemplate
+};
