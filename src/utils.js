@@ -1,7 +1,8 @@
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`
-}
+  BEFOREEND: `beforeend`,
+};
+
 const getRandomInt = (int) => {
   return Math.floor(Math.random() * int);
 };
@@ -59,5 +60,5 @@ export {
   splitString,
   render,
   RenderPosition,
-  createElement
+  createElement,
 };
