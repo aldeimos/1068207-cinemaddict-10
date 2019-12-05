@@ -87,3 +87,4 @@ const onClickShowMoreFilmsButton = () => {
 showMoreButton.addEventListener(`click`, onClickShowMoreFilmsButton);
 const footerStatistic = document.querySelector(`.footer__statistics p`);
 footerStatistic.textContent = `${cards.length} movies inside`; */
+
