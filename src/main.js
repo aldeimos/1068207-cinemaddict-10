@@ -46,7 +46,7 @@ const sortByStat = (films, prop) => {
   return copiedCards.sort((a, b) => b[prop] - a[prop]);
 };
 
-const renderCard = (card, container) => {
+const renderCard = (card, container = filmListContainer) => {
   const filmCard = new FilmCardComponent(card);
   const filmCardDetails = new FilmCardDetailsComponent(card);
 
