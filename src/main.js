@@ -63,7 +63,7 @@ const renderCard = (card, container = filmListContainer) => {
   const comments = card.comments;
 
   const onEscKeydown = (evt) => {
-    const isEscape = evt.key === `Escape` || evt.key === `key`;
+    const isEscape = evt.key === `Escape` || evt.key === `Esc`;
     if (isEscape) {
       filmCardDetails.getElement().remove();
       filmCardDetails.removeElement();
