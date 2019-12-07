@@ -8,6 +8,7 @@ import ShowMoreButtonComponent from './components/shom-more-button.js';
 import ExtraFilmSectionComponent from './components/films-sub-section.js';
 import FilmCardDetailsComponent from './components/film-details';
 import CommentsComponent from './components/comments.js';
+import AlertComponent from './components/alert.js';
 import {generateFilmCards} from './mocks/film-card.js';
 import {RenderPosition, render} from './utils.js';
 
@@ -35,6 +36,19 @@ render(filmsSection, new ExtraFilmSectionComponent(`Most Commented`, `films-list
 const topRatedFilmsContainer = document.querySelector(`.films-list--extra-rated .films-list__container`);
 const mostCommentedFilmsContainer = document.querySelector(`.films-list--extra-commented .films-list__container`);
 
+
+const checkDataAmount = () => {
+  if (cards.length === 0) {
+    const extraFimls = filmsSection.querySelectorAll(`.films-list--extra`);
+    for (let item of extraFimls) {
+      item.remove();
+    }
+    filmsSection.replaceChild(new AlertComponent().getElement(), filmList);
+  }
+};
+
+checkDataAmount();
+
 const sortByStat = (films, prop) => {
   const [...copiedCards] = films;
   return copiedCards.sort((a, b) => b[prop] - a[prop]);
@@ -48,6 +62,15 @@ const renderCard = (card, container = filmListContainer) => {
   const commentSectionDetailsCard = filmCardDetails.getElement().querySelector(`.film-details__comments-list`);
   const comments = card.comments;
 
+  const onEscKeydown = (evt) => {
+    const isEscape = evt.key === `Escape` || evt.key === `Esc`;
+    if (isEscape) {
+      filmCardDetails.getElement().remove();
+      filmCardDetails.removeElement();
+      document.removeEventListener(`keydown`, onEscKeydown);
+    }
+  };
+
   const onCloseButtonClick = () => {
     filmCardDetails.getElement().remove();
     filmCardDetails.removeElement();
@@ -56,6 +79,7 @@ const renderCard = (card, container = filmListContainer) => {
   const onFilmInnerClick = () => {
     render(siteMainSection, filmCardDetails.getElement(), RenderPosition.BEFOREEND);
     comments.forEach((comment) => render(commentSectionDetailsCard, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND));
+    document.addEventListener(`keydown`, onEscKeydown);
   };
 
   for (let item of filmCardParts) {
