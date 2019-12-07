@@ -1,3 +1,5 @@
+import {createElement} from "../utils";
+
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
     title,
@@ -17,8 +19,8 @@ const createFilmDetailsTemplate = (filmDetail) => {
     ageRestriction,
     comments,
   } = filmDetail;
-  return (`
-  <section class="film-details">
+  return (
+    `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
       <div class="form-details__top-container">
         <div class="film-details__close">
@@ -135,36 +137,25 @@ const createFilmDetailsTemplate = (filmDetail) => {
         </section>
       </div>
     </form>
-  </section>
-  `);
+  </section>`
+  );
 };
 
-const createCommentTemplate = (card) => {
-  const {
-    name,
-    text,
-    date,
-    emoji
-  } = card;
-  return (`
-  <li class="film-details__comment">
-  <span class="film-details__comment-emoji">
-    <img src="${emoji}" width="55" height="55" alt="emoji">
-  </span>
-  <div>
-    <p class="film-details__comment-text">${text}</p>
-    <p class="film-details__comment-info">
-      <span class="film-details__comment-author">${name}</span>
-      <span class="film-details__comment-day">${date}</span>
-      <button class="film-details__comment-delete">Delete</button>
-    </p>
-  </div>
-</li>
-  `);
-};
-
-
-export {
-  createFilmDetailsTemplate,
-  createCommentTemplate
-};
+export default class CardDetails {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+  getTemplate() {
+    return createFilmDetailsTemplate(this._card);
+  }
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+  removeElement() {
+    this._element = null;
+  }
+}
