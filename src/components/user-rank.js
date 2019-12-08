@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-class";
 
 const checkUserRank = (int) => {
   if (int >= 21) {
@@ -19,21 +19,12 @@ const createUserProfileTemplate = (watchedMovies) => {
   );
 };
 
-export default class UserProfile {
+export default class UserProfile extends AbstractComponent {
   constructor(watchedMovies) {
+    super();
     this._movieAmount = watchedMovies;
-    this._element = null;
   }
   getTemplate() {
     return createUserProfileTemplate(this._movieAmount);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

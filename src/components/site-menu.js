@@ -1,5 +1,6 @@
 import {countFilterValues} from '../mocks/filter.js';
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-class.js';
+
 const createSiteMenuTemplate = (cards) => {
   return (
     `<nav class="main-navigation">
@@ -12,21 +13,12 @@ const createSiteMenuTemplate = (cards) => {
   );
 };
 
-export default class SiteMenu {
+export default class SiteMenu extends AbstractComponent {
   constructor(cards) {
+    super();
     this._cards = cards;
-    this._element = null;
   }
   getTemplate() {
     return createSiteMenuTemplate(this._cards);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

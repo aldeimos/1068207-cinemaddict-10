@@ -1,17 +1,14 @@
 import {createElement} from "../utils";
 
-const createShowMoreButtonTemplate = () => {
-  return (
-    `<button class="films-list__show-more">Show more</button>`
-  );
-};
-
-export default class ShomMoreButton {
+export default class AbstractComponent {
   constructor() {
-    this.element = null;
+    if (new.target === AbstractComponent) {
+      throw new Error(`Can't instantiate AbstractComponent, only concrete one.`);
+    }
+    this._element = null;
   }
   getTemplate() {
-    return createShowMoreButtonTemplate();
+    throw new Error(`Abstract method not implemented: getTemplate`);
   }
   getElement() {
     if (!this._element) {
