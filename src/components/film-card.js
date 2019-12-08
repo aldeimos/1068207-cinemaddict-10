@@ -40,7 +40,7 @@ export default class Card extends AbstractComponent {
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
-  setClickHandlers(array, handler) {
+  setFilmInnersClickHandlers(array, handler) {
     for (let item of array) {
       item.addEventListener(`click`, handler);
     }

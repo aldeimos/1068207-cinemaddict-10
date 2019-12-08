@@ -4,11 +4,8 @@ import FilmCardComponent from '../components/film-card.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import ExtraFilmSectionComponent from '../components/films-sub-section.js';
 import AlertComponent from '../components/alert.js';
-import {
-  RenderPosition,
-  render,
-  replace
-} from '../utils.js/render';
+import {RenderPosition, render, replace, remove} from '../utils.js/render';
+
 const renderCard = (card, container) => {
   const siteMainSection = document.querySelector(`main`);
   const filmCard = new FilmCardComponent(card);
@@ -20,25 +17,23 @@ const renderCard = (card, container) => {
   const onEscKeydown = (evt) => {
     const isEscape = evt.key === `Escape` || evt.key === `Esc`;
     if (isEscape) {
-      filmCardDetails.getElement().remove();
-      filmCardDetails.removeElement();
+      remove(filmCardDetails);
       document.removeEventListener(`keydown`, onEscKeydown);
     }
   };
 
   const onCloseButtonClick = () => {
-    filmCardDetails.getElement().remove();
-    filmCardDetails.removeElement();
+    remove(filmCardDetails);
   };
 
   const onFilmInnerClick = () => {
     render(siteMainSection, filmCardDetails.getElement(), RenderPosition.BEFOREEND);
     comments.forEach((comment) => render(commentSectionDetailsCard, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND));
     document.addEventListener(`keydown`, onEscKeydown);
-    filmCardDetails.setClickHandler(onCloseButtonClick);
+    filmCardDetails.setButtonCloseClickHandler(onCloseButtonClick);
   };
 
-  filmCard.setClickHandlers(filmCardParts, onFilmInnerClick);
+  filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
 
   render(container, filmCard.getElement(), RenderPosition.BEFOREEND);
 };
@@ -66,7 +61,7 @@ export default class PageController {
       const topRatedFilms = sortByStat(cards, `rating`);
       const lowRatingFilms = topRatedFilms.filter((it) => (parseInt(it.rating, 10)) === 0);
       if (lowRatingFilms === cards.length) {
-        topRatedFilmsContainer.remove();
+        remove(topRatedFilmsContainer);
         return;
       }
       topRatedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS).forEach((card) => renderCard(card, topRatedFilmsContainer));
@@ -78,7 +73,7 @@ export default class PageController {
       const mostCommentedFilms = sortByStat(cards, `commentsAmount`);
       const lowCommentsFilms = mostCommentedFilms.filter((it) => it.commentsAmount === 0);
       if (lowCommentsFilms === cards.length) {
-        mostCommentedFilmsContainer.remove();
+        remove(mostCommentedFilmsContainer);
         return;
       }
       mostCommentedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS).forEach((card) => renderCard(card, mostCommentedFilmsContainer));
@@ -86,7 +81,7 @@ export default class PageController {
 
     const checkDataAmount = () => {
       if (cards.length === 0) {
-        replace(this._alert.getElement(), this._container.getElement().querySelector(`.films .films-list`));
+        replace(this._alert, this._container);
         return;
       }
       cards.slice(0, startAmountCards).forEach((card) => renderCard(card, filmListContainer));
@@ -103,11 +98,10 @@ export default class PageController {
       filmListContainer.innerHTML = ``;
       cards.slice(0, startAmountCards).forEach((card) => renderCard(card, filmListContainer));
       if (startAmountCards === totalAmountCards) {
-        this._showMoreButton.getElement().remove();
-        this._showMoreButton.removeElement();
+        remove(this._showMoreButton);
       }
     };
 
-    this._showMoreButton.setClickHandler(onShowMoreFilmsButtonClick);
+    this._showMoreButton.setShowMoreButtonClickHandler(onShowMoreFilmsButtonClick);
   }
 }
