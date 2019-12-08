@@ -44,7 +44,7 @@ const renderCard = (card, container) => {
 };
 
 export default class PageController {
-  constructor(container) {
+  constructor(container) { // boardComponent, просто контейнер, через который можно будет вытащить подходящие DOM-элементы.
     this._container = container;
     this._filmCard = new FilmCardComponent();
     this._alert = new AlertComponent();
