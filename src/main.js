@@ -4,7 +4,7 @@ import UserProfileComponent from './components/user-rank.js';
 import SortFormComponent from './components/sort-form.js';
 import FilmSectionComponent from './components/films-section.js';
 import {generateFilmCards} from './mocks/film-card.js';
-import {RenderPosition, render} from './utils.js';
+import {RenderPosition, render} from './utils.js/render.js';
 import PageController from './controllers/film-section.js';
 
 const TOTAL_AMOUNT_CARDS = 15;

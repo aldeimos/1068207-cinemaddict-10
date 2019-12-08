@@ -6,9 +6,9 @@ import ExtraFilmSectionComponent from '../components/films-sub-section.js';
 import AlertComponent from '../components/alert.js';
 import {
   RenderPosition,
-  render
-} from '../utils.js';
-
+  render,
+  replace
+} from '../utils.js/render';
 const renderCard = (card, container) => {
   const siteMainSection = document.querySelector(`main`);
   const filmCard = new FilmCardComponent(card);
@@ -86,7 +86,7 @@ export default class PageController {
 
     const checkDataAmount = () => {
       if (cards.length === 0) {
-        this._container.getElement().replaceChild(this._alert.getElement(), this._container.getElement().querySelector(`.films .films-list`));
+        replace(this._alert.getElement(), this._container.getElement().querySelector(`.films .films-list`));
         return;
       }
       cards.slice(0, startAmountCards).forEach((card) => renderCard(card, filmListContainer));
