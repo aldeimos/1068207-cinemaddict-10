@@ -1,4 +1,4 @@
-import AbstractComponent from "./abstract-class";
+import AbstractComponent from "./abstract-component";
 
 const checkUserRank = (int) => {
   if (int >= 21) {

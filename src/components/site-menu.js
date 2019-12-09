@@ -1,5 +1,5 @@
 import {countFilterValues} from '../mocks/filter.js';
-import AbstractComponent from './abstract-class.js';
+import AbstractComponent from './abstract-component.js';
 
 const createSiteMenuTemplate = (cards) => {
   return (
