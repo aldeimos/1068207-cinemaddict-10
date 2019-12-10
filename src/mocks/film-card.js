@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString} from '../utils.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString} from '../utils.js/common.js';
 import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
 import moment from 'moment';
 

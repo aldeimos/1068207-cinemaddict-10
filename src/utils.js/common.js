@@ -1,7 +1,3 @@
-const RenderPosition = {
-  AFTERBEGIN: `afterbegin`,
-  BEFOREEND: `beforeend`,
-};
 
 const getRandomInt = (int) => {
   return Math.floor(Math.random() * int);
@@ -34,31 +30,11 @@ const getRandomLengthArray = (item, separator, length) => {
   return shuffleArray(item).slice(0, length).join(`${separator}`);
 };
 
-const render = (container, element, place) => {
-  switch (place) {
-    case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
-      break;
-    case RenderPosition.BEFOREEND:
-      container.append(element);
-      break;
-  }
-};
-
-const createElement = (template) => {
-  const element = document.createElement(`div`);
-  element.innerHTML = template;
-  return element.firstChild;
-};
-
 export {
   getRandomInt,
   getRandomIntegerFromGap,
   getRandomArrayItem,
   getRandomLengthArray,
   shuffleArray,
-  splitString,
-  render,
-  RenderPosition,
-  createElement,
+  splitString
 };

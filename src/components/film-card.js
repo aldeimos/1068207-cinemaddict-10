@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createFilmCardTemplate = (card) => {
   const {
@@ -32,21 +32,17 @@ const createFilmCardTemplate = (card) => {
   );
 };
 
-export default class Card {
+export default class Card extends AbstractComponent {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
+  setFilmInnersClickHandlers(array, handler) {
+    for (let item of array) {
+      item.addEventListener(`click`, handler);
     }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }

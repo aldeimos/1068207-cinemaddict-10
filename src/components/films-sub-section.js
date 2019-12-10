@@ -1,4 +1,4 @@
-import {createElement} from "../utils";
+import AbstractComponent from "./abstract-component";
 
 const createFilmExtraListTemplate = (title, className) => {
   return (
@@ -10,22 +10,13 @@ const createFilmExtraListTemplate = (title, className) => {
   );
 };
 
-export default class extraFilmSection {
+export default class extraFilmSection extends AbstractComponent {
   constructor(title, className) {
+    super();
     this._title = title;
     this._className = className;
-    this._element = null;
   }
   getTemplate() {
     return createFilmExtraListTemplate(this._title, this._className);
-  }
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-  removeElement() {
-    this._element = null;
   }
 }
