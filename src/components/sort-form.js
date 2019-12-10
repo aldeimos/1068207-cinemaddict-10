@@ -27,7 +27,7 @@ class SortForm extends AbstractComponent {
   setSortTypeChangeHandler(handler) {
     this.getElement().addEventListener(`click`, (evt) => {
       evt.preventDefault();
-      console.log(evt);
+
       if (evt.target.tagName !== `A`) {
         return;
       }
