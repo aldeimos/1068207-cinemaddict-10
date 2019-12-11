@@ -143,6 +143,5 @@ export default class PageController {
       renderCards(filmListContainer, sortedCards.slice(0, startAmountCards));
     });
 
-    this._sortComponent.setClassActive();
   }
 }

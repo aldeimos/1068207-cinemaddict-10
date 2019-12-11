@@ -38,19 +38,18 @@ class SortForm extends AbstractComponent {
         return;
       }
 
+      [...this.getElement().querySelectorAll(`.sort__button`)].forEach((button) => {
+        if (button === evt.target) { // сделал чисто, чтобы проще было понять, как работает условие. Все комментарии удалю потом
+          button.classList.add(`sort__button--active`);
+        } else {
+          button.classList.remove(`sort__button--active`);
+        }
+      });
+
       this._currentSortType = sortType;
 
       handler(sortType);
     });
-  }
-  setClassActive() {
-    const sortChilds = Array.from(document.querySelectorAll(`a`));
-    for (let item of sortChilds) {
-      item.addEventListener(`click`, () => {
-        sortChilds.forEach((child) => child.classList.remove(`sort__button--active`));
-        item.classList.add(`sort__button--active`);
-      }); // Этого нет в задании, но мне кажется, что стоит сделать. Цикл в цикле плохо - подскажи как можно проще сделать.
-    }
   }
 }
 
