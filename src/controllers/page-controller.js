@@ -111,7 +111,9 @@ export default class PageController {
       return;
     }
 
-    this._cards = [].concat(this._cards.slice(0, index), newData, this._cards.slice(index + 1));
+    const array = this._cards.slice();
+    array[index] = newData;
+    this._cards = array;
 
     movieController.render(this._cards[index]);
   }
