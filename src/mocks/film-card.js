@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString} from '../utils.js/common.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate} from '../utils.js/common.js';
 import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
 import moment from 'moment';
 
@@ -65,11 +65,11 @@ const generateFilmCard = () => {
     directors: getRandomLengthArray(directors, `, `, 2),
     writers: getRandomLengthArray(writers, `, `, 2),
     actors: getRandomLengthArray(actors, `, `, 2),
-    fullDuration: `${hoursDuration}h ${minutesDuration}m`,
+    fullDuration: moment.utc(moment.duration(getRandomIntegerFromGap(5000, 10000), `seconds`).asMilliseconds()).format(`HH:mm`), // не знаю, как тут в правильном формате отформатировать
     releaseDay: getRandomIntegerFromGap(0, 30),
     month: getRandomArrayItem(MONTHS),
     country: getRandomArrayItem(COUNTRIES),
-    year: getRandomIntegerFromGap(1920, 1960),
+    year: formatDate(`${getRandomIntegerFromGap(0, 30)}, ${getRandomArrayItem(MONTHS)}, ${getRandomIntegerFromGap(1930, 1960)}`),
     ageRestriction: getRandomIntegerFromGap(12, 18),
     rating: generateRating(0, 10),
     commentsAmount: getRandomIntegerFromGap(0, 100),
