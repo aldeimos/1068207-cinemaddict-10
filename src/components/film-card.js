@@ -21,7 +21,7 @@ const createFilmCardTemplate = (card) => {
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate}</span>
         <span class="film-card__duration">${fullDuration}</span>
-        <span class="film-card__genre">${genre[0]}</span>
+        <span class="film-card__genre">${genre}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
       <p class="film-card__description">${description.slice(0, 39)}…</p>
@@ -48,7 +48,7 @@ export default class FilmCard extends AbstractComponent {
       item.addEventListener(`click`, handler);
     }
   }
-  setButtonWatchlistClickHanlder(handler) {
+  setButtonWatchlistClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`).addEventListener(`click`, handler);
   }
   setButtonWatchedClickHandler(handler) {

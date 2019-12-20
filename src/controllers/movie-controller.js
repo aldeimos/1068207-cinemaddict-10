@@ -50,7 +50,7 @@ export default class MovieController {
       this._filmCardDetails._subscribeOnEvents();
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
-    this._filmCard.setButtonWatchlistClickHanlder((evt) => {
+    this._filmCard.setButtonWatchlistClickHandler((evt) => {
       evt.preventDefault();
 
       this._onDataChange(this, card, Object.assign({}, card, {

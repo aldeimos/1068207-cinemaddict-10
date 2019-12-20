@@ -36,8 +36,6 @@ const filmsGenre = [
   `Action`,
   `Musical`,
   `Drama`,
-  `Comedy`,
-  `Animation`
 ];
 
 const directors = [`John Fedor`, `Alexander Nevskiy`, `Fedor Bondarchuk`, `That Dude`, `Michel Bey`];

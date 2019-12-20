@@ -29,7 +29,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
   } = filmDetail;
   /* const isWatchedChecked = isWatched ? (``) : ``; */
   return (
-    `<section class="film-details">
+    `<section class="film-details" tabindex="0" style="outline: none">
     <form class="film-details__inner" action="" method="get">
       <div class="form-details__top-container">
         <div class="film-details__close">
@@ -269,9 +269,9 @@ export default class FilmDetails extends AbstractSmartComponent {
     }
   }
   setSubmitFormHandler() {
-    this.getElement().querySelector(`.film-details__inner`).addEventListener(`keyup`, (evt) => {
-      const mememe = (evt.key === `Enter` && evt.ctrlKey); // c metaKey не работает, тестил с мака пхах
-      if (mememe) {
+    this.getElement().addEventListener(`keyup`, (evt) => {
+      const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey); // c metaKey не работает, тестил с мака пхах
+      if (isCombinationPressed) {
         const newComment = {
           name: `You`,
           text: this.getElement().querySelector(`textarea`).value,
