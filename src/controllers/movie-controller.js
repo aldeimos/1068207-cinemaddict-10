@@ -49,13 +49,12 @@ export default class MovieController {
       document.addEventListener(`keydown`, onEscKeydown);
       this._filmCardDetails._subscribeOnEvents();
     };
-
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
-    this._filmCard.setButtonWatchlsitClickHanlder((evt) => {
+    this._filmCard.setButtonWatchlistClickHanlder((evt) => {
       evt.preventDefault();
 
       this._onDataChange(this, card, Object.assign({}, card, {
-        toWatch: !card.toWatch
+        toWatch: !card.toWatch,
       }));
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {

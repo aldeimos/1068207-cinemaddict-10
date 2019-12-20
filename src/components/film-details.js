@@ -5,6 +5,7 @@ import {
   RenderPosition,
   remove,
 } from '../utils.js/render';
+import moment from "moment";
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -13,12 +14,10 @@ const createFilmDetailsTemplate = (filmDetail) => {
     poster,
     genre,
     fullDuration,
-    year,
+    releaseDate,
     rating,
     subtitle,
     country,
-    month,
-    releaseDay,
     directors,
     writers,
     actors,
@@ -28,55 +27,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
     isWatched,
     isFavorite,
   } = filmDetail;
-  const isWatchedChecked = isWatched ? (`<div class="form-details__middle-container">
-  <section class="film-details__user-rating-wrap">
-    <div class="film-details__user-rating-controls">
-      <button class="film-details__watched-reset" type="button">Undo</button>
-    </div>
-
-    <div class="film-details__user-score">
-      <div class="film-details__user-rating-poster">
-        <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
-      </div>
-
-      <section class="film-details__user-rating-inner">
-        <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
-
-        <p class="film-details__user-rating-feelings">How you feel it?</p>
-
-        <div class="film-details__user-rating-score">
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
-          <label class="film-details__user-rating-label" for="rating-1">1</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
-          <label class="film-details__user-rating-label" for="rating-2">2</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
-          <label class="film-details__user-rating-label" for="rating-3">3</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
-          <label class="film-details__user-rating-label" for="rating-4">4</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5">
-          <label class="film-details__user-rating-label" for="rating-5">5</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
-          <label class="film-details__user-rating-label" for="rating-6">6</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
-          <label class="film-details__user-rating-label" for="rating-7">7</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
-          <label class="film-details__user-rating-label" for="rating-8">8</label>
-
-          <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
-          <label class="film-details__user-rating-label" for="rating-9">9</label>
-
-        </div>
-      </section>
-    </div>
-  </section>
-</div>`) : ``;
+  /* const isWatchedChecked = isWatched ? (``) : ``; */
   return (
     `<section class="film-details">
     <form class="film-details__inner" action="" method="get">
@@ -118,7 +69,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Release Date</td>
-                <td class="film-details__cell">${releaseDay} ${month} ${year}</td>
+                <td class="film-details__cell">${releaseDate}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
@@ -129,11 +80,12 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <td class="film-details__cell">${country}</td>
               </tr>
               <tr class="film-details__row">
-                <td class="film-details__term">Genres</td>
+                <td class="film-details__term">${genre.length === 1 ? `Genre` : `Genres`}</td>
                 <td class="film-details__cell">
-                  <span class="film-details__genre">${genre}</span>
-                  <span class="film-details__genre">${genre}</span>
-                  <span class="film-details__genre">${genre}</span></td>
+                  <span class="film-details__genre">
+                  ${genre.length > 3 ? genre.slice(0, 3).join(`  `) : genre.join(`  `)}
+                  </span>
+                  </td>
               </tr>
             </table>
 
@@ -154,7 +106,55 @@ const createFilmDetailsTemplate = (filmDetail) => {
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
-       ${isWatchedChecked}
+      <div class="form-details__middle-container">
+        <section class="film-details__user-rating-wrap">
+          <div class="film-details__user-rating-controls">
+            <button class="film-details__watched-reset" type="button">Undo</button>
+          </div>
+
+          <div class="film-details__user-score">
+            <div class="film-details__user-rating-poster">
+              <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
+            </div>
+
+            <section class="film-details__user-rating-inner">
+              <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+
+              <p class="film-details__user-rating-feelings">How you feel it?</p>
+
+              <div class="film-details__user-rating-score">
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="1" id="rating-1">
+                <label class="film-details__user-rating-label" for="rating-1">1</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="2" id="rating-2">
+                <label class="film-details__user-rating-label" for="rating-2">2</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="3" id="rating-3">
+                <label class="film-details__user-rating-label" for="rating-3">3</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="4" id="rating-4">
+                <label class="film-details__user-rating-label" for="rating-4">4</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="5" id="rating-5">
+                <label class="film-details__user-rating-label" for="rating-5">5</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="6" id="rating-6">
+                <label class="film-details__user-rating-label" for="rating-6">6</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="7" id="rating-7">
+                <label class="film-details__user-rating-label" for="rating-7">7</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
+                <label class="film-details__user-rating-label" for="rating-8">8</label>
+
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
+                <label class="film-details__user-rating-label" for="rating-9">9</label>
+
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
       <div class="form-details__bottom-container">
         <section class="film-details__comments-wrap">
           <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -165,11 +165,11 @@ const createFilmDetailsTemplate = (filmDetail) => {
 
           <div class="film-details__new-comment">
             <div for="add-emoji" class="film-details__add-emoji-label">
-              <img src="">
+              <img class="film-details__new-comment-image" src="">
             </div>
 
             <label class="film-details__comment-label">
-              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+              <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" minlength="15"></textarea>
             </label>
 
             <div class="film-details__emoji-list">
@@ -201,7 +201,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
   );
 };
 
-export default class CardDetails extends AbstractSmartComponent {
+export default class FilmDetails extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
@@ -233,7 +233,7 @@ export default class CardDetails extends AbstractSmartComponent {
     });
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
       this._card.isWatched = !this._card.isWatched;
-      this.rerender();
+      this.showRatingBlock();
     });
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
     this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
@@ -257,5 +257,35 @@ export default class CardDetails extends AbstractSmartComponent {
         emojiContainer.style.width = `100%`;
       });
     });
+    this.showRatingBlock();
+    this.setSubmitFormHandler();
+  }
+  showRatingBlock() {
+    const ratingBlock = this.getElement().querySelector(`.form-details__middle-container`);
+    if (this._card.isWatched) {
+      ratingBlock.style.display = `block`;
+    } else {
+      ratingBlock.style.display = `none`;
+    }
+  }
+  setSubmitFormHandler() {
+    this.getElement().querySelector(`.film-details__inner`).addEventListener(`keyup`, (evt) => {
+      const mememe = (evt.key === `Enter` && evt.ctrlKey); // c metaKey не работает, тестил с мака пхах
+      if (mememe) {
+        const newComment = {
+          name: `You`,
+          text: this.getElement().querySelector(`textarea`).value,
+          date: moment().startOf().fromNow(),
+          emoji: `./${this.getElement().querySelector(`.film-details__new-comment-image`).src.slice(22)}`,
+        };
+        this._card.comments.push(newComment);
+        render(this.getElement().querySelector(`.film-details__comments-list`), new CommentsComponent(this._card.comments[this._card.comments.length - 1]).getElement(), RenderPosition.BEFOREEND);
+        this.clearForm();
+      }
+    });
+  }
+  clearForm() {
+    this.getElement().querySelector(`textarea`).value = null;
+    this.getElement().querySelector(`.film-details__new-comment-image`).src = ``;
   }
 }

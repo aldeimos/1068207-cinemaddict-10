@@ -2,15 +2,23 @@ import ExtraFilmSectionComponent from '../components/films-sub-section.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import AlertComponent from '../components/alert.js';
 import MovieController from '../controllers/movie-controller.js';
-import {SortType} from '../components/sort-form.js';
+import {
+  SortType
+} from '../components/sort-form.js';
 
-import {RenderPosition, render, remove, replace} from '../utils.js/render';
+import {
+  RenderPosition,
+  render,
+  remove,
+  replace
+} from '../utils.js/render';
 
 const TOTAL_AMOUNT_CARDS = 15;
 const EXTRA_LIST_AMOUNT_CARDS = 2;
 let startAmountCards = 5;
 
 const renderCards = (filmListContainer, cards, onDataChange, onViewChange) => {
+  console.log(cards, 'Карточки попали под рендер');
   return cards.map((card) => {
     const movieController = new MovieController(filmListContainer, onDataChange, onViewChange);
     movieController.render(card);
@@ -119,8 +127,11 @@ export default class PageController {
   }
 
   _onViewChange() {
+    console.log(this._showedCardControllers, 'До работы функции');
     this._showedCardControllers.forEach((it) => it.setDefaultView());
+    console.log(this._showedCardControllers, 'После работы функции');
   }
+
   _onSortTypeChange(sortType) {
     let sortedCards = [];
     const filmListContainer = this._container.getElement().querySelector(`.films .films-list__container`);
@@ -139,7 +150,8 @@ export default class PageController {
     startAmountCards = 5;
     filmListContainer.innerHTML = ``;
     this._renderShowMoreButton(sortedCards);
-    renderCards(filmListContainer, sortedCards.slice(0, startAmountCards));
+    console.log(sortedCards, 'Отсортированные карточки');
+    renderCards(filmListContainer, sortedCards.slice(0, startAmountCards), this._onDataChange, this._onViewChange);
   }
   _renderShowMoreButton(array) {
     if (startAmountCards >= array.length) {
