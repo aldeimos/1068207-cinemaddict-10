@@ -1,14 +1,13 @@
 import FilmCardDetailsComponent from '../components/film-details';
 import FilmCardComponent from '../components/film-card.js';
-
-
+import CommentsComponent from '../components/comments.js';
+import moment from "moment";
 import {
   RenderPosition,
   render,
   remove,
   replace
 } from '../utils.js/render';
-
 
 const Mode = {
   DEFAULT: `default`,
@@ -39,6 +38,33 @@ export default class MovieController {
       if (isEscape) {
         remove(this._filmCardDetails);
         document.removeEventListener(`keydown`, onEscKeydown);
+        document.removeEventListener(`keyup`, onCtrlEnterKeyup);
+      }
+    };
+
+    const onButtonCloseClick = () => {
+      remove(this._filmCardDetails);
+      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
+      document.removeEventListener(`keydown`, onEscKeydown);
+    };
+
+    const onCtrlEnterKeyup = (evt) => {
+      const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
+      if (isCombinationPressed) {
+        const emojiSrc = `${this._filmCardDetails.getElement().querySelector(`.film-details__new-comment-image`).src}`;
+        const substring = emojiSrc.indexOf(`images`);
+        const newComment = {
+          name: `You`,
+          text: this._filmCardDetails.getElement().querySelector(`textarea`).value,
+          date: moment().startOf().fromNow(),
+          emoji: `./${emojiSrc.substr(substring, emojiSrc.length)}`,
+        };
+        if (newComment.text === `` || newComment.emoji === `./`) {
+          return;
+        }
+        card.comments.push(newComment);
+        render(this._filmCardDetails.getElement().querySelector(`.film-details__comments-list`), new CommentsComponent(card.comments[card.comments.length - 1]).getElement(), RenderPosition.BEFOREEND);
+        this._filmCardDetails.clearForm();
       }
     };
 
@@ -46,7 +72,10 @@ export default class MovieController {
       this._onViewChange();
       this._mode = Mode.DETAILS;
       render(siteMainSection, this._filmCardDetails.getElement(), RenderPosition.BEFOREEND);
+      const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
+      document.addEventListener(`keyup`, onCtrlEnterKeyup);
+      buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails._subscribeOnEvents();
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);

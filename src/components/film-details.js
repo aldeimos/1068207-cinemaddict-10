@@ -3,9 +3,7 @@ import CommentsComponent from './comments.js';
 import {
   render,
   RenderPosition,
-  remove,
 } from '../utils.js/render';
-import moment from "moment";
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -27,7 +25,6 @@ const createFilmDetailsTemplate = (filmDetail) => {
     isWatched,
     isFavorite,
   } = filmDetail;
-  /* const isWatchedChecked = isWatched ? (``) : ``; */
   return (
     `<section class="film-details" tabindex="0" style="outline: none">
     <form class="film-details__inner" action="" method="get">
@@ -211,9 +208,6 @@ export default class FilmDetails extends AbstractSmartComponent {
   getTemplate() {
     return createFilmDetailsTemplate(this._card);
   }
-  setButtonCloseClickHandler(handler) {
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, handler);
-  }
 
   recoveryListeners() {
     this._subscribeOnEvents();
@@ -236,9 +230,6 @@ export default class FilmDetails extends AbstractSmartComponent {
       this.showRatingBlock();
     });
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, () => {
-      remove(this);
-    });
     this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this.renderComments();
     this.setEmojiClickHandler();
@@ -258,7 +249,6 @@ export default class FilmDetails extends AbstractSmartComponent {
       });
     });
     this.showRatingBlock();
-    this.setSubmitFormHandler();
   }
   showRatingBlock() {
     const ratingBlock = this.getElement().querySelector(`.form-details__middle-container`);
@@ -267,22 +257,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     } else {
       ratingBlock.style.display = `none`;
     }
-  }
-  setSubmitFormHandler() {
-    this.getElement().addEventListener(`keyup`, (evt) => {
-      const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey); // c metaKey не работает, тестил с мака пхах
-      if (isCombinationPressed) {
-        const newComment = {
-          name: `You`,
-          text: this.getElement().querySelector(`textarea`).value,
-          date: moment().startOf().fromNow(),
-          emoji: `./${this.getElement().querySelector(`.film-details__new-comment-image`).src.slice(22)}`,
-        };
-        this._card.comments.push(newComment);
-        render(this.getElement().querySelector(`.film-details__comments-list`), new CommentsComponent(this._card.comments[this._card.comments.length - 1]).getElement(), RenderPosition.BEFOREEND);
-        this.clearForm();
-      }
-    });
   }
   clearForm() {
     this.getElement().querySelector(`textarea`).value = null;
