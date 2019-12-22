@@ -66,7 +66,7 @@ const generateFilmCard = () => {
     directors: getRandomLengthArray(directors, `, `, 2),
     writers: getRandomLengthArray(writers, `, `, 2),
     actors: getRandomLengthArray(actors, `, `, 2),
-    fullDuration: moment.utc(moment.duration(getRandomIntegerFromGap(5000, 10000), `seconds`).asMilliseconds()).format(`HH:mm`), // не знаю, как тут в правильном формате отформатировать
+    fullDuration: moment.utc(moment.duration(getRandomIntegerFromGap(5000, 10000), `seconds`).asMilliseconds()).format(`HH:mm`), // не знаю, зачем нужно продолжительность делать через библиотеку. По-моему обычная функция была бы проще
     country: getRandomArrayItem(COUNTRIES),
     year,
     releaseDate: formatDate(`${getRandomIntegerFromGap(0, 28)}, ${getRandomArrayItem(MONTHS)}, ${year}`),
