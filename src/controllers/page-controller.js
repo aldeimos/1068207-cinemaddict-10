@@ -134,7 +134,7 @@ export default class PageController {
     const filmListContainer = this._container.getElement().querySelector(`.films .films-list__container`);
     switch (sortType) {
       case SortType.DATE_UP:
-        sortedCards = this._cards.slice().sort((a, b) => b.year - a.year);
+        sortedCards = this._cards.slice().sort((a, b) => b.year - a.year); // тут сортирую именно по году, а не по полной дате. Возможно, нужно как-то таймстэмп и дальше уже считать
         break;
       case SortType.RATING_UP:
         sortedCards = this._cards.slice().sort((a, b) => b.rating - a.rating);
