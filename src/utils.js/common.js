@@ -1,3 +1,4 @@
+import moment from 'moment';
 
 const getRandomInt = (int) => {
   return Math.floor(Math.random() * int);
@@ -11,6 +12,10 @@ const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerFromGap(0, array.length - 1);
 
   return array[randomIndex];
+};
+
+const formatDate = (date) => {
+  return moment(date).format(`DD MMMM YYYY`);
 };
 
 const shuffleArray = (arr) => {
@@ -36,5 +41,6 @@ export {
   getRandomArrayItem,
   getRandomLengthArray,
   shuffleArray,
-  splitString
+  splitString,
+  formatDate,
 };

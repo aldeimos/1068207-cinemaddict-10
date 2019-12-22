@@ -39,7 +39,7 @@ class SortForm extends AbstractComponent {
       }
 
       [...this.getElement().querySelectorAll(`.sort__button`)].forEach((button) => {
-        if (button === evt.target) { // сделал чисто, чтобы проще было понять, как работает условие. Все комментарии удалю потом
+        if (button === evt.target) {
           button.classList.add(`sort__button--active`);
         } else {
           button.classList.remove(`sort__button--active`);

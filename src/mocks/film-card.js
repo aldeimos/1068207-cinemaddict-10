@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString} from '../utils.js/common.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate, shuffleArray} from '../utils.js/common.js';
 import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
 import moment from 'moment';
 
@@ -35,7 +35,7 @@ const filmsTitle = [
 const filmsGenre = [
   `Action`,
   `Musical`,
-  `Drama`
+  `Drama`,
 ];
 
 const directors = [`John Fedor`, `Alexander Nevskiy`, `Fedor Bondarchuk`, `That Dude`, `Michel Bey`];
@@ -53,23 +53,23 @@ const generateFilmCard = () => {
   const minutesDuration = getRandomInt(MAX_DURATION_IN_MINUTES);
 
   const title = getRandomArrayItem(filmsTitle);
+  const year = getRandomIntegerFromGap(1930, 1960);
 
   return {
     title,
     subtitle: title,
     description: getRandomLengthArray(splitString(filmsDescription, `. `), `. `, 3),
     poster: `./images/posters/${getRandomArrayItem(filmsPoster)}`,
-    genre: getRandomArrayItem(filmsGenre),
+    genre: shuffleArray(filmsGenre).slice(0, getRandomIntegerFromGap(1, filmsGenre.length)),
     hoursDuration,
     minutesDuration,
     directors: getRandomLengthArray(directors, `, `, 2),
     writers: getRandomLengthArray(writers, `, `, 2),
     actors: getRandomLengthArray(actors, `, `, 2),
-    fullDuration: `${hoursDuration}h ${minutesDuration}m`,
-    releaseDay: getRandomIntegerFromGap(0, 30),
-    month: getRandomArrayItem(MONTHS),
+    fullDuration: moment.utc(moment.duration(getRandomIntegerFromGap(5000, 10000), `seconds`).asMilliseconds()).format(`HH:mm`), // не знаю, как тут в правильном формате отформатировать
     country: getRandomArrayItem(COUNTRIES),
-    year: getRandomIntegerFromGap(1920, 1960),
+    year,
+    releaseDate: formatDate(`${getRandomIntegerFromGap(0, 28)}, ${getRandomArrayItem(MONTHS)}, ${year}`),
     ageRestriction: getRandomIntegerFromGap(12, 18),
     rating: generateRating(0, 10),
     commentsAmount: getRandomIntegerFromGap(0, 100),
