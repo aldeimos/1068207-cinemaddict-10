@@ -51,13 +51,12 @@ export default class MovieController {
     const onCtrlEnterKeyup = (evt) => {
       const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
       if (isCombinationPressed) {
-        const emojiSrc = `${this._filmCardDetails.getElement().querySelector(`.film-details__new-comment-image`).src}`;
-        const substring = emojiSrc.indexOf(`images`);
+        const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
         const newComment = {
           name: `You`,
           text: this._filmCardDetails.getElement().querySelector(`textarea`).value,
           date: moment().startOf().fromNow(),
-          emoji: `./${emojiSrc.substr(substring, emojiSrc.length)}`,
+          emoji: `./images/emoji/${emojiSrc.value}.png`,
         };
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;

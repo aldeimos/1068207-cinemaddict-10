@@ -170,7 +170,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
             </label>
 
             <div class="film-details__emoji-list">
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smiling">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
               <label class="film-details__emoji-label" for="emoji-smile">
                 <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
               </label>
@@ -237,7 +237,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   setEmojiClickHandler() {
     const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label img`);
     const Emojies = {
-      'smiling': `./images/emoji/smile.png`,
+      'smile': `./images/emoji/smile.png`,
       'sleeping': `./images/emoji/sleeping.png`,
       'puke': `./images/emoji/puke.png`,
       'anrgy': `./images/emoji/angry.png`,
