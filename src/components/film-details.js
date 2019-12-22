@@ -185,7 +185,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
               </label>
 
-              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="anrgy">
+              <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
               <label class="film-details__emoji-label" for="emoji-angry">
                 <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
               </label>
@@ -236,15 +236,9 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
   setEmojiClickHandler() {
     const emojiContainer = this.getElement().querySelector(`.film-details__add-emoji-label img`);
-    const Emojies = {
-      'smile': `./images/emoji/smile.png`,
-      'sleeping': `./images/emoji/sleeping.png`,
-      'puke': `./images/emoji/puke.png`,
-      'anrgy': `./images/emoji/angry.png`,
-    };
     [...this.getElement().querySelectorAll(`.film-details__emoji-item`)].forEach((button) => {
       button.addEventListener(`click`, () => {
-        emojiContainer.src = `${Emojies[button.value]}`;
+        emojiContainer.src = `./images/emoji/${button.value}.png`;
         emojiContainer.style.width = `100%`;
       });
     });
