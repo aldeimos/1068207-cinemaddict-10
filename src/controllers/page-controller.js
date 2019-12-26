@@ -11,25 +11,24 @@ import {
   render,
   remove,
   replace
-} from '../utils.js/render';
+} from '../utils/render';
 
-const TOTAL_AMOUNT_CARDS = 15;
 const EXTRA_LIST_AMOUNT_CARDS = 2;
 let startAmountCards = 5;
 
-const renderCards = (filmListContainer, cards, onDataChange, onViewChange) => {
+const renderCards = (filmListContainer, cards, onDataChange, onViewChange, filterController) => {
   return cards.map((card) => {
-    const movieController = new MovieController(filmListContainer, onDataChange, onViewChange);
+    const movieController = new MovieController(filmListContainer, onDataChange, onViewChange, filterController);
     movieController.render(card);
     return movieController;
   });
 };
 
 export default class PageController {
-  constructor(container, sort) {
+  constructor(container, sort, moviesModel, filterController) {
     this._container = container;
+    this._moviesModel = moviesModel;
 
-    this._cards = [];
     this._showedCardControllers = [];
     this._alert = new AlertComponent();
     this._showMoreButton = new ShowMoreButtonComponent();
@@ -38,21 +37,25 @@ export default class PageController {
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+
+    this._filterController = filterController;
+    this._filterComponent = filterController._filterComponent;
   }
-  render(cards) {
-    this._cards = cards;
+  render() {
+    const cards = this._moviesModel.getFilms();
     const filmListContainer = this._container.getElement().querySelector(`.films .films-list__container`);
 
     const checkDataAmount = () => {
-      if (this._cards.length === 0) {
+      if (cards.length === 0) {
         replace(this._alert, this._container);
         return;
       }
       const newCards = renderCards(
           filmListContainer,
-          this._cards.slice(0, startAmountCards),
+          cards.slice(0, startAmountCards),
           this._onDataChange,
-          this._onViewChange
+          this._onViewChange,
+          this._filterController
       );
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
     };
@@ -71,9 +74,9 @@ export default class PageController {
           RenderPosition.BEFOREEND
       );
       const topRatedFilmsContainer = document.querySelector(`.films-list--extra-rated .films-list__container`);
-      const topRatedFilms = sortByStat(this._cards, `rating`);
+      const topRatedFilms = sortByStat(cards, `rating`);
       const lowRatingFilms = topRatedFilms.filter((it) => parseInt(it.rating, 10) === 0);
-      if (lowRatingFilms === this._cards.length) {
+      if (lowRatingFilms === cards.length) {
         remove(topRatedFilmsContainer);
         return;
       }
@@ -81,7 +84,8 @@ export default class PageController {
           topRatedFilmsContainer,
           topRatedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS),
           this._onDataChange,
-          this._onViewChange
+          this._onViewChange,
+          this._filterController
       );
     };
 
@@ -94,9 +98,9 @@ export default class PageController {
       const mostCommentedFilmsContainer = document.querySelector(
           `.films-list--extra-commented .films-list__container`
       );
-      const mostCommentedFilms = sortByStat(this._cards, `commentsAmount`);
+      const mostCommentedFilms = sortByStat(cards, `commentsAmount`);
       const lowCommentsFilms = mostCommentedFilms.filter((it) => it.commentsAmount === 0);
-      if (lowCommentsFilms === this._cards.length) {
+      if (lowCommentsFilms === cards.length) {
         remove(mostCommentedFilmsContainer);
         return;
       }
@@ -104,25 +108,32 @@ export default class PageController {
           mostCommentedFilmsContainer,
           mostCommentedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS),
           this._onDataChange,
-          this._onViewChange
+          this._onViewChange,
+          this._filterController
       );
     };
     renderTopRatedFilms();
     renderMostCommentedFilms();
-    this._renderShowMoreButton(this._cards);
+    this._renderShowMoreButton(cards);
+    this._filterComponent.getElement().addEventListener(`click`, (evt) => {
+      [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
+        if (button === evt.target) {
+          button.classList.add(`main-navigation__item--active`);
+        } else {
+          button.classList.remove(`main-navigation__item--active`);
+        }
+      });
+      const activeFilterValue = evt.target.textContent.slice(0, -2);
+      this._filterController._activeFilterType = activeFilterValue;
+      this._moviesModel.setFilter(activeFilterValue);
+      this._onFilterChange();
+    });
   }
   _onDataChange(movieController, oldData, newData) {
-    const index = this._cards.findIndex((it) => it === oldData);
-
-    if (index === -1) {
-      return;
+    const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
+    if (isSuccess) {
+      movieController.render(newData);
     }
-
-    const array = this._cards.slice();
-    array[index] = newData;
-    this._cards = array;
-
-    movieController.render(this._cards[index]);
   }
 
   _onViewChange() {
@@ -130,24 +141,25 @@ export default class PageController {
   }
 
   _onSortTypeChange(sortType) {
+    const cards = this._moviesModel.getFilms();
     let sortedCards = [];
     const filmListContainer = this._container.getElement().querySelector(`.films .films-list__container`);
     switch (sortType) {
       case SortType.DATE_UP:
-        sortedCards = this._cards.slice().sort((a, b) => b.year - a.year); // тут сортирую именно по году, а не по полной дате. Возможно, нужно как-то таймстэмп и дальше уже считать
+        sortedCards = cards.slice().sort((a, b) => b.year - a.year);
         break;
       case SortType.RATING_UP:
-        sortedCards = this._cards.slice().sort((a, b) => b.rating - a.rating);
+        sortedCards = cards.slice().sort((a, b) => b.rating - a.rating);
         break;
       case SortType.DEFAULT:
-        sortedCards = this._cards.slice();
+        sortedCards = cards.slice();
         break;
     }
     remove(this._showMoreButton);
     startAmountCards = 5;
     filmListContainer.innerHTML = ``;
     this._renderShowMoreButton(sortedCards);
-    const sortedFilms = renderCards(filmListContainer, sortedCards.slice(0, startAmountCards), this._onDataChange, this._onViewChange);
+    const sortedFilms = renderCards(filmListContainer, sortedCards.slice(0, startAmountCards), this._onDataChange, this._onViewChange, this._filterController);
     this._showedCardControllers = this._showedCardControllers.concat(sortedFilms);
   }
   _renderShowMoreButton(array) {
@@ -161,21 +173,31 @@ export default class PageController {
     );
     const onShowMoreFilmsButtonClick = () => {
       const filmListContainer = this._container.getElement().querySelector(`.films .films-list__container`);
-      let filmsToShow = TOTAL_AMOUNT_CARDS - startAmountCards;
+      let totalAmountOfCards = array.length;
+      let filmsToShow = totalAmountOfCards - startAmountCards;
       startAmountCards += filmsToShow > 5 ? 5 : filmsToShow;
       filmListContainer.innerHTML = ``;
       const newCards = renderCards(
           filmListContainer,
           array.slice(0, startAmountCards),
           this._onDataChange,
-          this._onViewChange
+          this._onViewChange,
+          this._filterController
       );
       this._showedCardControllers = this._showedCardControllers.concat(newCards);
-      if (startAmountCards === TOTAL_AMOUNT_CARDS) {
+      if (startAmountCards === totalAmountOfCards) {
         remove(this._showMoreButton);
       }
     };
 
     this._showMoreButton.setShowMoreButtonClickHandler(onShowMoreFilmsButtonClick);
+  }
+  _onFilterChange() {
+    const filteredFilms = this._moviesModel.getFilms();
+    startAmountCards = 5;
+    const container = this._container.getElement().querySelector(`.films .films-list__container`);
+    container.innerHTML = ``;
+    renderCards(container, filteredFilms.slice(0, startAmountCards), this._onDataChange, this._onViewChange, this._filterController);
+    this._renderShowMoreButton(filteredFilms);
   }
 }

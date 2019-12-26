@@ -1,4 +1,4 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate, shuffleArray} from '../utils.js/common.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate, shuffleArray} from '../utils/common.js';
 import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
 import moment from 'moment';
 
@@ -56,6 +56,7 @@ const generateFilmCard = () => {
   const year = getRandomIntegerFromGap(1930, 1960);
 
   return {
+    id: String(new Date() + Math.random()),
     title,
     subtitle: title,
     description: getRandomLengthArray(splitString(filmsDescription, `. `), `. `, 3),
@@ -88,6 +89,7 @@ const generateFilmCards = (count) => {
 
 const generateComment = () => {
   return {
+    id: String(new Date() + Math.random()),
     name: getRandomArrayItem(directors),
     text: `My disappointment is immeasurable, and my day is ruined`,
     date: moment().startOf(`${getRandomArrayItem(DATES)}`).fromNow(),

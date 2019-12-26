@@ -3,7 +3,7 @@ import CommentsComponent from './comments.js';
 import {
   render,
   RenderPosition,
-} from '../utils.js/render';
+} from '../utils/render';
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -218,7 +218,11 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   renderComments() {
-    this._comments.forEach((comment) => render(this._commentsContainer, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND));
+    this._commentsContainer.innerHTML = ``;
+    this._comments.forEach((comment) => {
+      render(this._commentsContainer, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND);
+    });
+    this.setDeleteCommentClickHandler();
   }
 
   _subscribeOnEvents() {
@@ -231,7 +235,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     });
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
     this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
-    this.renderComments();
     this.setEmojiClickHandler();
   }
   setEmojiClickHandler() {
@@ -255,5 +258,25 @@ export default class FilmDetails extends AbstractSmartComponent {
   clearForm() {
     this.getElement().querySelector(`textarea`).value = null;
     this.getElement().querySelector(`.film-details__new-comment-image`).src = ``;
+  }
+  setDeleteCommentClickHandler() {
+    const onDeleteButtonClick = (evt) => {
+      evt.preventDefault();
+      const index = this._comments.findIndex((comment) => comment.id === evt.target.dataset.indexNumber);
+      this._comments.splice(index, 1);
+      this.renderComments();
+      this.rerenderCommentsBlockTitle();
+    };
+
+    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
+      button.removeEventListener(`click`, onDeleteButtonClick);
+    });
+
+    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
+      button.addEventListener(`click`, onDeleteButtonClick);
+    });
+  }
+  rerenderCommentsBlockTitle() {
+    this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._comments.length}</span>`;
   }
 }

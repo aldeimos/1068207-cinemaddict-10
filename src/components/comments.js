@@ -2,6 +2,7 @@ import AbstractComponent from "./abstract-component";
 
 const createCommentTemplate = (card) => {
   const {
+    id,
     name,
     text,
     date,
@@ -17,7 +18,7 @@ const createCommentTemplate = (card) => {
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${name}</span>
       <span class="film-details__comment-day">${date}</span>
-      <button class="film-details__comment-delete">Delete</button>
+      <button data-index-number="${id}" class="film-details__comment-delete">Delete</button>
     </p>
   </div>
 </li>`
