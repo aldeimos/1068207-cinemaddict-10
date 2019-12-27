@@ -1,13 +1,13 @@
 import FilmCardDetailsComponent from '../components/film-details';
 import FilmCardComponent from '../components/film-card.js';
-import CommentsComponent from '../components/comments.js';
+
 import moment from "moment";
 import {
   RenderPosition,
   render,
   remove,
   replace
-} from '../utils.js/render';
+} from '../utils/render';
 
 const Mode = {
   DEFAULT: `default`,
@@ -15,7 +15,7 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, filterController) {
     this._container = container;
     this._filmCard = null;
     this._filmCardDetails = null;
@@ -23,6 +23,7 @@ export default class MovieController {
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
     this._mode = Mode.DEFAULT;
+    this._filterController = filterController;
   }
   render(card) {
     const oldFilmCard = this._filmCard;
@@ -53,6 +54,7 @@ export default class MovieController {
       if (isCombinationPressed) {
         const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
         const newComment = {
+          id: String(new Date() + Math.random()),
           name: `You`,
           text: this._filmCardDetails.getElement().querySelector(`textarea`).value,
           date: moment().startOf().fromNow(),
@@ -61,9 +63,10 @@ export default class MovieController {
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
-        card.comments.push(newComment);
-        render(this._filmCardDetails.getElement().querySelector(`.film-details__comments-list`), new CommentsComponent(card.comments[card.comments.length - 1]).getElement(), RenderPosition.BEFOREEND);
+        this._filmCardDetails.updateCommentsArray(newComment);
+        this._filmCardDetails.renderComments();
         this._filmCardDetails.clearForm();
+        this._filmCardDetails.rerenderCommentsBlockTitle();
       }
     };
 
@@ -76,6 +79,7 @@ export default class MovieController {
       document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails._subscribeOnEvents();
+      this._filmCardDetails.renderComments();
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -84,6 +88,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         toWatch: !card.toWatch,
       }));
+      this._filterController.updateData();
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
       evt.preventDefault();
@@ -91,6 +96,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isWatched: !card.isWatched
       }));
+      this._filterController.updateData();
     });
     this._filmCard.setButtonFavoriteClickHandler((evt) => {
       evt.preventDefault();
@@ -98,6 +104,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isFavorite: !card.isFavorite
       }));
+      this._filterController.updateData();
     });
 
     if (oldFilmCardDetails && oldFilmCard) {

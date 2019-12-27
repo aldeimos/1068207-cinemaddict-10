@@ -1,5 +1,5 @@
-import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate, shuffleArray} from '../utils.js/common.js';
-import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES, DATES} from '../const.js';
+import {getRandomInt, getRandomIntegerFromGap, getRandomArrayItem, getRandomLengthArray, splitString, formatDate, shuffleArray} from '../utils/common.js';
+import {MAX_DURATION_IN_HOURS, MAX_DURATION_IN_MINUTES, MONTHS, COUNTRIES} from '../const.js';
 import moment from 'moment';
 
 const filmsDescription = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
@@ -56,6 +56,7 @@ const generateFilmCard = () => {
   const year = getRandomIntegerFromGap(1930, 1960);
 
   return {
+    id: String(new Date() + Math.random()),
     title,
     subtitle: title,
     description: getRandomLengthArray(splitString(filmsDescription, `. `), `. `, 3),
@@ -66,7 +67,7 @@ const generateFilmCard = () => {
     directors: getRandomLengthArray(directors, `, `, 2),
     writers: getRandomLengthArray(writers, `, `, 2),
     actors: getRandomLengthArray(actors, `, `, 2),
-    fullDuration: `${hoursDuration}h ${minutesDuration}m`, // не знаю, зачем нужно продолжительность делать через библиотеку. По-моему обычная функция была бы проще
+    fullDuration: `${hoursDuration}h ${minutesDuration}m`,
     country: getRandomArrayItem(COUNTRIES),
     year,
     releaseDate: formatDate(`${getRandomIntegerFromGap(0, 28)}, ${getRandomArrayItem(MONTHS)}, ${year}`),
@@ -88,9 +89,10 @@ const generateFilmCards = (count) => {
 
 const generateComment = () => {
   return {
+    id: String(new Date() + Math.random()),
     name: getRandomArrayItem(directors),
     text: `My disappointment is immeasurable, and my day is ruined`,
-    date: moment().startOf(`${getRandomArrayItem(DATES)}`).fromNow(),
+    date: /* moment().startOf(`${getRandomArrayItem(DATES)}`).fromNow() */ moment(`${getRandomIntegerFromGap(2010, 2020)}/${getRandomIntegerFromGap(1, 12)}/${getRandomIntegerFromGap(1, 28)} 12:55`).format(`YYYY/MM/DD HH:mm`),
     emoji: `./images/emoji/${getRandomArrayItem(emojies)}`
   };
 };

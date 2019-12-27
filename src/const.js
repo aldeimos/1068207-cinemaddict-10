@@ -18,10 +18,18 @@ const MONTHS = [`January`,
 
 const DATES = [`year`, `month`, `week`, `day`];
 
+const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+};
+
 export {
   MAX_DURATION_IN_HOURS,
   MAX_DURATION_IN_MINUTES,
   COUNTRIES,
   MONTHS,
-  DATES
+  DATES,
+  FilterType
 };
