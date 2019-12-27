@@ -261,11 +261,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   setDeleteCommentClickHandler() {
     const onDeleteButtonClick = (evt) => {
       evt.preventDefault();
-      const index = this._comments.findIndex((comment) => comment.id === evt.target.dataset.indexNumber);
-      /* this._comments.splice(index, 1); */
-      const array = this._comments.slice();
-      this._comments = array;
-      this._comments.splice(index, 1);
+      this._comments = this._comments.filter((comment) => comment.id !== evt.target.dataset.indexNumber);
       this.renderComments();
       this.rerenderCommentsBlockTitle();
     };

@@ -20,16 +20,4 @@ export default class SiteMenu extends AbstractComponent {
   getTemplate() {
     return createSiteMenuTemplate(this._cards);
   }
-  /* setFilterChangeHandler() {
-    this.getElement().addEventListener(`click`, (evt) => {
-      [...this.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
-        if (button === evt.target) {
-          button.classList.add(`main-navigation__item--active`);
-        } else {
-          button.classList.remove(`main-navigation__item--active`);
-        }
-      });
-      return evt.target.textContent.slice(0, -2).toUpperCase();
-    });
-  } */
 }
