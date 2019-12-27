@@ -39,7 +39,7 @@ export default class PageController {
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
 
     this._filterController = filterController;
-    this._filterComponent = filterController._filterComponent;
+    this._filterComponent = filterController.getFilterComponent();
   }
   render() {
     const cards = this._moviesModel.getFilms();
@@ -124,7 +124,7 @@ export default class PageController {
         }
       });
       const activeFilterValue = evt.target.textContent.slice(0, -2);
-      this._filterController._activeFilterType = activeFilterValue;
+      this._filterController.changeFilterType(activeFilterValue);
       this._moviesModel.setFilter(activeFilterValue);
       this._onFilterChange();
     });

@@ -34,4 +34,13 @@ export default class FilterController {
   _onDataChange() {
     this.render();
   }
+  updateData() {
+    this._onDataChange();
+  }
+  getFilterComponent() {
+    return this._filterComponent;
+  }
+  changeFilterType(filterType) {
+    this._activeFilterType = filterType;
+  }
 }

@@ -63,7 +63,7 @@ export default class MovieController {
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
-        card.comments.push(newComment);
+        this._filmCardDetails.updateCommentsArray(newComment);
         this._filmCardDetails.renderComments();
         this._filmCardDetails.clearForm();
         this._filmCardDetails.rerenderCommentsBlockTitle();
@@ -88,7 +88,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         toWatch: !card.toWatch,
       }));
-      this._filterController._onDataChange();
+      this._filterController.updateData();
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
       evt.preventDefault();
@@ -96,7 +96,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isWatched: !card.isWatched
       }));
-      this._filterController._onDataChange();
+      this._filterController.updateData();
     });
     this._filmCard.setButtonFavoriteClickHandler((evt) => {
       evt.preventDefault();
@@ -104,7 +104,7 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isFavorite: !card.isFavorite
       }));
-      this._filterController._onDataChange();
+      this._filterController.updateData();
     });
 
     if (oldFilmCardDetails && oldFilmCard) {

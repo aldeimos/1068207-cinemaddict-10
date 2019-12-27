@@ -203,7 +203,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     super();
     this._card = card;
     this._comments = card.comments;
-
   }
   getTemplate() {
     return createFilmDetailsTemplate(this._card);
@@ -263,6 +262,9 @@ export default class FilmDetails extends AbstractSmartComponent {
     const onDeleteButtonClick = (evt) => {
       evt.preventDefault();
       const index = this._comments.findIndex((comment) => comment.id === evt.target.dataset.indexNumber);
+      /* this._comments.splice(index, 1); */
+      const array = this._comments.slice();
+      this._comments = array;
       this._comments.splice(index, 1);
       this.renderComments();
       this.rerenderCommentsBlockTitle();
@@ -278,5 +280,8 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
   rerenderCommentsBlockTitle() {
     this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._comments.length}</span>`;
+  }
+  updateCommentsArray(comment) {
+    this._comments.push(comment);
   }
 }

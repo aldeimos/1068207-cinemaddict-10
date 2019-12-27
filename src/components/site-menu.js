@@ -20,7 +20,7 @@ export default class SiteMenu extends AbstractComponent {
   getTemplate() {
     return createSiteMenuTemplate(this._cards);
   }
-  setFilterChangeHandler() {
+  /* setFilterChangeHandler() {
     this.getElement().addEventListener(`click`, (evt) => {
       [...this.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
         if (button === evt.target) {
@@ -31,5 +31,5 @@ export default class SiteMenu extends AbstractComponent {
       });
       return evt.target.textContent.slice(0, -2).toUpperCase();
     });
-  }
+  } */
 }
