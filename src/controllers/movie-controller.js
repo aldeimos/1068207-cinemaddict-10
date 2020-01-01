@@ -88,15 +88,13 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         toWatch: !card.toWatch,
       }));
-      this._filterController.updateData();
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
       evt.preventDefault();
-
       this._onDataChange(this, card, Object.assign({}, card, {
         isWatched: !card.isWatched
       }));
-      this._filterController.updateData();
+      /* this._filterController.updateData(); */
     });
     this._filmCard.setButtonFavoriteClickHandler((evt) => {
       evt.preventDefault();
@@ -104,7 +102,6 @@ export default class MovieController {
       this._onDataChange(this, card, Object.assign({}, card, {
         isFavorite: !card.isFavorite
       }));
-      this._filterController.updateData();
     });
 
     if (oldFilmCardDetails && oldFilmCard) {

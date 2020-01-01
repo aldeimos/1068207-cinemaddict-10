@@ -25,11 +25,20 @@ const FilterType = {
   FAVORITES: `Favorites`,
 };
 
+const FilterTypeStatistic = {
+  ALL: `all`,
+  TODAY: `today`,
+  WEEK: `week`,
+  MONTH: `month`,
+  YEAR: `year`
+};
+
 export {
   MAX_DURATION_IN_HOURS,
   MAX_DURATION_IN_MINUTES,
   COUNTRIES,
   MONTHS,
   DATES,
-  FilterType
+  FilterType,
+  FilterTypeStatistic
 };
