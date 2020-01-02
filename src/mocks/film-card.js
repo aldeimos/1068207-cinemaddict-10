@@ -38,7 +38,7 @@ const filmsGenre = [
   `Drama`,
 ];
 
-const viewingDates = [`all`, `today`, `week`, `month`, `year`];
+const viewingDates = [`today`, `week`, `month`, `year`];
 
 const directors = [`John Fedor`, `Alexander Nevskiy`, `Fedor Bondarchuk`, `That Dude`, `Michel Bey`];
 const writers = [`Hideo Kodjima`, `Tod Howard`, `Meme Dude`, `HeartMan`, `Die HardMan`];
