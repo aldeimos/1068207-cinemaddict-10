@@ -1,6 +1,3 @@
-
-import {formatDate} from '../utils/common.js';
-
 export default class Movie {
   constructor(data) {
     this.id = data[`id`];

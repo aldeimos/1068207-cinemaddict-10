@@ -227,7 +227,6 @@ export default class PageController {
   }
   _onFilterChange() {
     const filteredFilms = this._moviesModel.getFilms();
-    console.log(filteredFilms);
     startAmountCards = 5;
     const container = this._container.getElement().querySelector(`.films .films-list__container`);
     container.innerHTML = ``;

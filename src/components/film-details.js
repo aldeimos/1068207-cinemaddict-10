@@ -290,6 +290,5 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
   updateCommentsArray(comment) {
     this._comments.push(comment);
-    console.log(this._comments);
   }
 }

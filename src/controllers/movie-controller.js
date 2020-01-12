@@ -2,7 +2,6 @@ import FilmCardDetailsComponent from '../components/film-details';
 import FilmCardComponent from '../components/film-card.js';
 import MovieModel from '../models/movie.js';
 
-import moment from "moment";
 import {
   RenderPosition,
   render,

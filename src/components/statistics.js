@@ -3,6 +3,7 @@ import {
   getFilmsByFilterStatistic
 } from '../utils/filter.js';
 import Chart from "chart.js";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {convertRuntime} from '../const.js';
 
 const genreCounter = (cards, prop) => {
@@ -86,15 +87,13 @@ const createStatisticSectionTemplate = (cards) => {
   </section>`;
 };
 
-export default class Statistic extends AbstractComponent {
+export default class Statistics extends AbstractComponent {
   constructor(cards, activeRadioButton) {
     super();
     this._cards = cards;
     this._activeStatisticFilterType = null;
     this.setFilterType(activeRadioButton);
     this._watchedFilms = getFilmsByFilterStatistic(this._cards, this._activeStatisticFilterType);
-    console.log(this._activeStatisticFilterType);
-    console.log(this._watchedFilms);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.hide();
@@ -108,6 +107,7 @@ export default class Statistic extends AbstractComponent {
       const ctx = this.getElement().querySelector(`.statistic__chart`).getContext(`2d`);
       return new Chart(ctx, {
         type: `bar`,
+        plugins: [ChartDataLabels],
         data: {
           labels: [`Action`, `Animation`, `Family`, `Thriller`, `Sci-Fi`, `Horror`, `Adventure`, `No Genre`, `Comedy`, `Drama`],
           datasets: [{
@@ -141,12 +141,27 @@ export default class Statistic extends AbstractComponent {
           }]
         },
         options: {
+          legend: {
+            display: false,
+          },
           scales: {
             yAxes: [{
               ticks: {
                 beginAtZero: true
               }
             }]
+          },
+          plugins: {
+            datalabels: {
+              color: `white`,
+              labels: {
+                title: {
+                  font: {
+                    size: `25`
+                  }
+                }
+              }
+            }
           }
         }
       });

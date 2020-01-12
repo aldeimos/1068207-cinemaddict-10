@@ -47,8 +47,6 @@ const getWatchedFilmsYear = (films) => {
 };
 
 const getFilmsByFilter = (films, filterType) => {
-  console.log(filterType === FilterType.HISTORY);
-  console.log(filterType, FilterType.HISTORY);
   switch (filterType) {
     case FilterType.ALL:
       return getAllFilms(films);
@@ -59,7 +57,6 @@ const getFilmsByFilter = (films, filterType) => {
     case FilterType.FAVORITES:
       return getFavoritesFilms(films);
   }
-  console.log(films);
   return films;
 };
 
