@@ -15,7 +15,7 @@ const getRandomArrayItem = (array) => {
 };
 
 const formatDate = (date) => {
-  return moment(date).format(`DD MMMM YYYY`);
+  return moment(date).format(`DD MMMM YYYY HH:mm`);
 };
 
 const shuffleArray = (arr) => {

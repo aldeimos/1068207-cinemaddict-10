@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 const MAX_DURATION_IN_HOURS = 3;
 const MAX_DURATION_IN_MINUTES = 59;
 
@@ -19,10 +21,10 @@ const MONTHS = [`January`,
 const DATES = [`year`, `month`, `week`, `day`];
 
 const FilterType = {
-  ALL: `All movies`,
-  WATCHLIST: `Watchlist`,
-  HISTORY: `History`,
-  FAVORITES: `Favorites`,
+  ALL: `#all`,
+  WATCHLIST: `#watchlist`,
+  HISTORY: `#history`,
+  FAVORITES: `#favorites`,
 };
 
 const FilterTypeStatistic = {
@@ -33,6 +35,18 @@ const FilterTypeStatistic = {
   YEAR: `year`
 };
 
+const convertRuntime = (runtime) => {
+  const hours = (runtime / 60);
+  const rhours = Math.floor(hours);
+  const minutes = (hours - rhours) * 60;
+  const rminutes = Math.round(minutes);
+  return `${rhours}h ${rminutes}m`;
+};
+
+const convertReleaseDate = (date) => {
+  return moment(date).format(`MM/DD/YYYY`);
+};
+
 export {
   MAX_DURATION_IN_HOURS,
   MAX_DURATION_IN_MINUTES,
@@ -40,5 +54,7 @@ export {
   MONTHS,
   DATES,
   FilterType,
-  FilterTypeStatistic
+  FilterTypeStatistic,
+  convertRuntime,
+  convertReleaseDate
 };

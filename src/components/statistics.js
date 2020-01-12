@@ -3,6 +3,7 @@ import {
   getFilmsByFilterStatistic
 } from '../utils/filter.js';
 import Chart from "chart.js";
+import {convertRuntime} from '../const.js';
 
 const genreCounter = (cards, prop) => {
   const genreArray = cards.filter((card) => card.genre[0] === prop);
@@ -11,26 +12,26 @@ const genreCounter = (cards, prop) => {
 
 
 const createStatisticSectionTemplate = (cards) => {
-
   const totalFilms = cards.length;
-  let amountHours = 0;
-  let amountMinutes = 0;
-  cards.forEach((card) => {
-    amountHours += card.hoursDuration;
-    amountMinutes += card.minutesDuration;
-  });
-  const fractionalPart = ((amountMinutes / 60) + ``).slice(1, amountMinutes.length);
+  let amountTime = 0;
 
-  const amountTime = {
-    hours: amountHours + (Math.trunc(amountMinutes / 60)),
-    minutes: Math.trunc(+fractionalPart * 60)
-  };
+  cards.forEach((card) => {
+    amountTime += card.runtime;
+  });
+  const convertedRuntime = convertRuntime(amountTime);
 
   const getMostPopularGenre = () => {
     const genres = {
       Action: genreCounter(cards, `Action`),
-      Musical: genreCounter(cards, `Musical`),
-      Drama: genreCounter(cards, `Drama`)
+      Animation: genreCounter(cards, `Animation`),
+      Family: genreCounter(cards, `Family`),
+      Thriller: genreCounter(cards, `Thriller`),
+      SciFi: genreCounter(cards, `Sci-Fi`),
+      Horror: genreCounter(cards, `Horror`),
+      Adventure: genreCounter(cards, `Adventure`),
+      NoGenre: genreCounter(cards, undefined),
+      Comedy: genreCounter(cards, `Comdedy`),
+      Drama: genreCounter(cards, `Drama`),
     };
     const sortedGenres = Object.entries(genres).sort((a, b) => b[1] - a[1]);
     return sortedGenres[0];
@@ -71,7 +72,7 @@ const createStatisticSectionTemplate = (cards) => {
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Total duration</h4>
-        <p class="statistic__item-text">${amountTime.hours} <span class="statistic__item-description">h</span> ${amountTime.minutes} <span class="statistic__item-description">m</span></p>
+        <p class="statistic__item-text">${convertedRuntime}</p>
       </li>
       <li class="statistic__text-item">
         <h4 class="statistic__item-title">Top genre</h4>
@@ -92,6 +93,8 @@ export default class Statistic extends AbstractComponent {
     this._activeStatisticFilterType = null;
     this.setFilterType(activeRadioButton);
     this._watchedFilms = getFilmsByFilterStatistic(this._cards, this._activeStatisticFilterType);
+    console.log(this._activeStatisticFilterType);
+    console.log(this._watchedFilms);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.hide();
@@ -106,19 +109,33 @@ export default class Statistic extends AbstractComponent {
       return new Chart(ctx, {
         type: `bar`,
         data: {
-          labels: [`Action`, `Musical`, `Drama`],
+          labels: [`Action`, `Animation`, `Family`, `Thriller`, `Sci-Fi`, `Horror`, `Adventure`, `No Genre`, `Comedy`, `Drama`],
           datasets: [{
             label: `Favorite Genre`,
-            data: [genreCounter(this._watchedFilms, `Action`), genreCounter(this._watchedFilms, `Musical`), genreCounter(this._watchedFilms, `Drama`)],
+            data: [genreCounter(this._watchedFilms, `Action`), genreCounter(this._watchedFilms, `Animation`), genreCounter(this._watchedFilms, `Family`), genreCounter(this._watchedFilms, `Thriller`), genreCounter(this._watchedFilms, `Sci-Fi`), genreCounter(this._watchedFilms, `Horror`), genreCounter(this._watchedFilms, `Adventure`), genreCounter(this._watchedFilms, undefined), genreCounter(this._watchedFilms, `Comedy`), genreCounter(this._watchedFilms, `Drama`)],
             backgroundColor: [
               `rgba(255, 99, 132, 0.2)`,
               `rgba(54, 162, 235, 0.2)`,
-              `rgba(255, 206, 86, 0.2)`
+              `rgba(255, 206, 86, 0.2)`,
+              `rgba(255, 255, 86, 0.2)`,
+              `rgba(44, 155, 50, 0.2)`,
+              `rgba(0, 217, 255, 0.2)`,
+              `rgba(106, 0, 255, 0.2)`,
+              `rgba(225, 0, 255, 0.2)`,
+              `rgba(255, 0, 0, 0.2)`,
+              `rgba(255, 155, 23, 0.2)`
             ],
             borderColor: [
               `rgba(255, 99, 132, 1)`,
               `rgba(54, 162, 235, 1)`,
               `rgba(255, 206, 86, 1)`,
+              `rgba(255, 255, 86, 1)`,
+              `rgba(44, 155, 86, 1)`,
+              `rgba(0, 217, 255, 1)`,
+              `rgba(106, 0, 255, 1)`,
+              `rgba(225, 0, 255, 1)`,
+              `rgba(255, 0, 0, 1)`,
+              `rgba(255, 155, 23, 1)`,
             ],
             borderWidth: 2,
           }]

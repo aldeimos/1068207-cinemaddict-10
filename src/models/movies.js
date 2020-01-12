@@ -8,6 +8,7 @@ import {
 export default class Movies {
   constructor() {
     this._cards = [];
+    this._filmsComments = [];
     this._activeFilterType = FilterType.ALL;
   }
   getFilms() {
@@ -18,6 +19,12 @@ export default class Movies {
   }
   setFilms(cards) {
     this._cards = Array.from(cards);
+  }
+  setComments(cards) {
+    this._filmsComments = Array.from(cards);
+  }
+  getComments() {
+    return this._filmsComments;
   }
   updateFilm(id, card) {
     const index = this._cards.findIndex((it) => it.id === id);

@@ -64,7 +64,7 @@ export default class FilterController {
         } else {
           button.classList.remove(ACTIVE_CLASS);
         }
-        const activeFilterValue = evt.target.textContent.slice(0, -2);
+        const activeFilterValue = evt.target.hash;
         this.changeFilterType(activeFilterValue);
         this._moviesModel.setFilter(activeFilterValue);
         handler();
