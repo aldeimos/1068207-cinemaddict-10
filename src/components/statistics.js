@@ -29,9 +29,9 @@ const createStatisticSectionTemplate = (cards) => {
 
   const getMostPopularGenre = () => {
     const genres = {
-      action: genreCounter(cards, `Action`),
-      musical: genreCounter(cards, `Musical`),
-      drama: genreCounter(cards, `Drama`)
+      Action: genreCounter(cards, `Action`),
+      Musical: genreCounter(cards, `Musical`),
+      Drama: genreCounter(cards, `Drama`)
     };
     const sortedGenres = Object.entries(genres).sort((a, b) => b[1] - a[1]);
     return sortedGenres[0];
@@ -128,9 +128,6 @@ export default class Statistics extends AbstractComponent {
         options: {
           legend: {
             display: false,
-          },
-          tooltips: {
-            mode: `nearest`
           },
           scales: {
             yAxes: [{
