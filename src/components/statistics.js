@@ -3,6 +3,7 @@ import {
   getFilmsByFilterStatistic
 } from '../utils/filter.js';
 import Chart from "chart.js";
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 const genreCounter = (cards, prop) => {
   const genreArray = cards.filter((card) => card.genre[0] === prop);
@@ -28,9 +29,9 @@ const createStatisticSectionTemplate = (cards) => {
 
   const getMostPopularGenre = () => {
     const genres = {
-      Action: genreCounter(cards, `Action`),
-      Musical: genreCounter(cards, `Musical`),
-      Drama: genreCounter(cards, `Drama`)
+      action: genreCounter(cards, `Action`),
+      musical: genreCounter(cards, `Musical`),
+      drama: genreCounter(cards, `Drama`)
     };
     const sortedGenres = Object.entries(genres).sort((a, b) => b[1] - a[1]);
     return sortedGenres[0];
@@ -85,7 +86,7 @@ const createStatisticSectionTemplate = (cards) => {
   </section>`;
 };
 
-export default class Statistic extends AbstractComponent {
+export default class Statistics extends AbstractComponent {
   constructor(cards, activeRadioButton) {
     super();
     this._cards = cards;
@@ -124,12 +125,31 @@ export default class Statistic extends AbstractComponent {
           }]
         },
         options: {
+          legend: {
+            display: false,
+          },
+          tooltips: {
+            mode: `nearest`
+          },
           scales: {
             yAxes: [{
               ticks: {
                 beginAtZero: true
               }
             }]
+          },
+          plugins: {
+            datalabels: {
+              color: `white`,
+              labels: {
+                title: {
+                  font: {
+                    size: `25`
+                  }
+                }
+              }
+            }
+
           }
         }
       });
