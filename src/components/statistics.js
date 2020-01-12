@@ -106,6 +106,7 @@ export default class Statistics extends AbstractComponent {
       const ctx = this.getElement().querySelector(`.statistic__chart`).getContext(`2d`);
       return new Chart(ctx, {
         type: `bar`,
+        plugins: [ChartDataLabels],
         data: {
           labels: [`Action`, `Musical`, `Drama`],
           datasets: [{
