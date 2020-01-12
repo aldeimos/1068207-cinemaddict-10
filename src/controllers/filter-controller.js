@@ -82,13 +82,13 @@ export default class FilterController {
   switchToFilms(pageControllerHandler, statsHandler) {
     const allMoviesButton = this._filterComponent.getElement().querySelector(`.main-navigation__item--all-movies`);
     allMoviesButton.addEventListener(`click`, () => {
-      this._statsButton.classList.toggle(ACTIVE_CLASS);
+      this._statsButton.classList.remove(ACTIVE_CLASS);
       pageControllerHandler(); // show
       statsHandler(); // hide
     });
   }
   removeActiveClass() {
-    [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
+    [...this._filterComponent.getElement().querySelectorAll(`a`)].forEach((button) => {
       button.classList.remove(ACTIVE_CLASS);
     });
   }

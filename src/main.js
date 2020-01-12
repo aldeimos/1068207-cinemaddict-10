@@ -20,7 +20,6 @@ import API from './api.js';
 
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
 const AUTORIZATION = `Basic jasjHsjaWkSksajashk01`;
-const WATCHED_MOVIES = 15;
 
 const api = new API(END_POINT, AUTORIZATION);
 const moviesModel = new MoviesModel();
@@ -28,8 +27,6 @@ const siteHeader = document.querySelector(`.header`);
 const siteMainSection = document.querySelector(`.main`);
 const footerStatistic = document.querySelector(`.footer__statistics p`);
 const sortComponent = new SortForm();
-render(siteHeader, new UserProfileComponent(WATCHED_MOVIES).getElement(), RenderPosition.BEFOREEND);
-/* const statisticsComponent = new StatisticsComponent(moviesModel.getFilms(), FilterTypeStatistic.ALL); */
 const filmSectionComponent = new FilmSectionComponent();
 render(siteMainSection, filmSectionComponent.getElement(), RenderPosition.BEFOREEND);
 render(siteMainSection, sortComponent.getElement(), RenderPosition.AFTERBEGIN);
@@ -40,14 +37,13 @@ api.getFilms()
     moviesModel.setFilms(films);
     filterComponent.render();
     const statisticsComponent = new StatisticsComponent(moviesModel.getFilms(), FilterTypeStatistic.ALL);
+    render(siteHeader, new UserProfileComponent(moviesModel.getAllFilms().length).getElement(), RenderPosition.BEFOREEND);
     const pageController = new PageController(filmSectionComponent, sortComponent, moviesModel, filterComponent, statisticsComponent, api);
     render(siteMainSection, statisticsComponent.getElement(), RenderPosition.BEFOREEND);
     const arrayOfPromises = films.map((film) => api.getComments(film[`id`]).then((comments) => comments));
     Promise.all(arrayOfPromises).then((comments) => {
       moviesModel.setComments(comments);
       pageController.render();
+      footerStatistic.textContent = `${moviesModel.getAllFilms().length} movies inside`;
     });
   });
-
-
-footerStatistic.textContent = `${moviesModel.getFilms().length} movies inside`;
