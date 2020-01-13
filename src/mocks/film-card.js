@@ -38,6 +38,8 @@ const filmsGenre = [
   `Drama`,
 ];
 
+const viewingDates = [`today`, `week`, `month`, `year`];
+
 const directors = [`John Fedor`, `Alexander Nevskiy`, `Fedor Bondarchuk`, `That Dude`, `Michel Bey`];
 const writers = [`Hideo Kodjima`, `Tod Howard`, `Meme Dude`, `HeartMan`, `Die HardMan`];
 const actors = [`Danila Ivanovich`, `Brat Danili`, `Brat Brata Danili`];
@@ -77,7 +79,8 @@ const generateFilmCard = () => {
     comments: generateComments(),
     toWatch: Math.random() > 0.5,
     isWatched: Math.random() > 0.5,
-    isFavorite: Math.random() > 0.5
+    isFavorite: Math.random() > 0.5,
+    viewingDate: getRandomArrayItem(viewingDates),
   };
 };
 

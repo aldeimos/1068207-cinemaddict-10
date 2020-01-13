@@ -2,6 +2,9 @@ import ExtraFilmSectionComponent from '../components/films-sub-section.js';
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import AlertComponent from '../components/alert.js';
 import MovieController from '../controllers/movie-controller.js';
+import StatsComponent from '../components/statistics.js';
+import {FilterTypeStatistic} from '../const.js';
+
 import {
   SortType
 } from '../components/sort-form.js';
@@ -25,10 +28,10 @@ const renderCards = (filmListContainer, cards, onDataChange, onViewChange, filte
 };
 
 export default class PageController {
-  constructor(container, sort, moviesModel, filterController) {
+  constructor(container, sort, moviesModel, filterController, stats) {
     this._container = container;
+    this._mainSection = document.querySelector(`main`);
     this._moviesModel = moviesModel;
-
     this._showedCardControllers = [];
     this._alert = new AlertComponent();
     this._showMoreButton = new ShowMoreButtonComponent();
@@ -36,10 +39,14 @@ export default class PageController {
     this._onDataChange = this._onDataChange.bind(this);
     this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
-
+    this._statsComponent = stats;
+    this._statsComponent.setActiveFilter();
     this._filterController = filterController;
     this._filterComponent = filterController.getFilterComponent();
+    this.show = this.show.bind(this);
+    this.hide = this.hide.bind(this);
   }
   render() {
     const cards = this._moviesModel.getFilms();
@@ -115,29 +122,32 @@ export default class PageController {
     renderTopRatedFilms();
     renderMostCommentedFilms();
     this._renderShowMoreButton(cards);
-    this._filterComponent.getElement().addEventListener(`click`, (evt) => {
-      [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
-        if (button === evt.target) {
-          button.classList.add(`main-navigation__item--active`);
-        } else {
-          button.classList.remove(`main-navigation__item--active`);
-        }
-      });
-      const activeFilterValue = evt.target.textContent.slice(0, -2);
-      this._filterController.changeFilterType(activeFilterValue);
-      this._moviesModel.setFilter(activeFilterValue);
-      this._onFilterChange();
-    });
+    this.setFilterStatisticClickHandler();
+    this.setFiltersHandler();
   }
   _onDataChange(movieController, oldData, newData) {
     const isSuccess = this._moviesModel.updateFilm(oldData.id, newData);
     if (isSuccess) {
       movieController.render(newData);
     }
+    this._filterController.updateData();
+    this.updateStatsComponent();
+    this.setFiltersHandler();
+    this.setFilterStatisticClickHandler();
   }
 
   _onViewChange() {
     this._showedCardControllers.forEach((it) => it.setDefaultView());
+  }
+
+  updateStatsComponent(radioButtonValue = FilterTypeStatistic.ALL) {
+    remove(this._statsComponent);
+    this._statsComponent = new StatsComponent(this._moviesModel.getAllFilms(), radioButtonValue);
+    this._statsComponent.setFilterType(radioButtonValue);
+    this._statsComponent.setActiveFilter();
+    this.setFilterStatisticClickHandler();
+    render(this._mainSection, this._statsComponent.getElement(), RenderPosition.BEFOREEND);
+    this._statsComponent.show();
   }
 
   _onSortTypeChange(sortType) {
@@ -199,5 +209,25 @@ export default class PageController {
     container.innerHTML = ``;
     renderCards(container, filteredFilms.slice(0, startAmountCards), this._onDataChange, this._onViewChange, this._filterController);
     this._renderShowMoreButton(filteredFilms);
+  }
+  show() {
+    this._sortComponent.getElement().classList.remove(`visually-hidden`);
+    this._container.getElement().classList.remove(`visually-hidden`);
+  }
+  hide() {
+    this._sortComponent.getElement().classList.add(`visually-hidden`);
+    this._container.getElement().classList.add(`visually-hidden`);
+  }
+  setFiltersHandler() {
+    this._filterController.setFiltersHandler(this._onFilterChange);
+    this._filterController.switchToStatistics(this.hide, this._statsComponent.show);
+    this._filterController.switchToFilms(this.show, this._statsComponent.hide);
+  }
+  setFilterStatisticClickHandler() {
+    [...this._statsComponent.getElement().querySelectorAll(`.statistic__filters-input`)].forEach((button) => {
+      button.addEventListener(`click`, (evt) => {
+        this.updateStatsComponent(evt.target.value);
+      });
+    });
   }
 }

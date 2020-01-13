@@ -1,7 +1,17 @@
 import FilterComponent from '../components/site-menu.js';
-import {FilterType} from '../const.js';
-import {render, replace, RenderPosition} from '../utils/render.js';
-import {getFilmsByFilter} from '../utils/filter.js';
+import {
+  FilterType
+} from '../const.js';
+import {
+  render,
+  replace,
+  RenderPosition
+} from '../utils/render.js';
+import {
+  getFilmsByFilter
+} from '../utils/filter.js';
+
+const ACTIVE_CLASS = `main-navigation__item--active`;
 
 export default class FilterController {
   constructor(container, moviesModel) {
@@ -12,6 +22,7 @@ export default class FilterController {
     this._filterComponent = null;
 
     this._onDataChange = this._onDataChange.bind(this);
+    this._statsButton = null;
   }
   render() {
     const container = this._container;
@@ -30,6 +41,7 @@ export default class FilterController {
     } else {
       render(container, this._filterComponent.getElement(), RenderPosition.AFTERBEGIN);
     }
+    this._statsButton = this._filterComponent.getElement().querySelector(`.main-navigation__item--additional`);
   }
   _onDataChange() {
     this.render();
@@ -42,5 +54,42 @@ export default class FilterController {
   }
   changeFilterType(filterType) {
     this._activeFilterType = filterType;
+  }
+  setFiltersHandler(handler) {
+    [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
+      button.addEventListener(`click`, (evt) => {
+        this.removeActiveClass();
+        if (button === evt.target) {
+          button.classList.add(ACTIVE_CLASS);
+        } else {
+          button.classList.remove(ACTIVE_CLASS);
+        }
+        const activeFilterValue = evt.target.textContent.slice(0, -2);
+        this.changeFilterType(activeFilterValue);
+        this._moviesModel.setFilter(activeFilterValue);
+        handler();
+      });
+    });
+  }
+  switchToStatistics(pageControllerHandler, statsHandler) {
+    this._statsButton.addEventListener(`click`, () => {
+      this.removeActiveClass();
+      this._statsButton.classList.toggle(ACTIVE_CLASS);
+      pageControllerHandler();
+      statsHandler();
+    });
+  }
+  switchToFilms(pageControllerHandler, statsHandler) {
+    const allMoviesButton = this._filterComponent.getElement().querySelector(`.main-navigation__item--all-movies`);
+    allMoviesButton.addEventListener(`click`, () => {
+      this._statsButton.classList.toggle(ACTIVE_CLASS);
+      pageControllerHandler(); // show
+      statsHandler(); // hide
+    });
+  }
+  removeActiveClass() {
+    [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
+      button.classList.remove(ACTIVE_CLASS);
+    });
   }
 }
