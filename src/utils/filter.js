@@ -3,40 +3,47 @@ import {
   FilterTypeStatistic
 } from '../const.js';
 
+import moment from 'moment';
+
 const getAllFilms = (films) => {
   return films.filter((film) => film);
 };
 
 const getWatchlistFilms = (films) => {
-  return films.filter((film) => film.toWatch);
+  return films.filter((film) => film.watchList);
 };
 
 const getWatchedFilms = (films) => {
-  return films.filter((film) => film.isWatched);
+  return films.filter((film) => film.alreadyWatched);
 };
 
 const getFavoritesFilms = (films) => {
-  return films.filter((film) => film.isFavorite);
+  return films.filter((film) => film.favorite);
 };
 
 const getWatchedFilmsAll = (films) => {
-  return films.filter((film) => film.isWatched);
+  return films.filter((film) => film.alreadyWatched);
 };
 
 const getWatchedFilmsToday = (films) => {
-  return films.filter((film) => film.viewingDate === `today` && film.isWatched);
+  const todayStartDate = moment(new Date()).subtract(24, `hours`).unix();
+  const todayEndDate = moment(new Date()).add(24, `hours`).unix();
+  return films.filter((film) => film.alreadyWatched && (moment(film.watchingDate).unix() <= todayEndDate && todayStartDate <= moment(film.watchingDate).unix()));
 };
 
 const getWatchedFilmsWeek = (films) => {
-  return films.filter((film) => film.viewingDate === `week` && film.isWatched);
+  const weekStartDate = moment(new Date()).subtract(1, `week`).unix();
+  return films.filter((film) => film.alreadyWatched && moment(film.watchingDate).unix() >= weekStartDate);
 };
 
 const getWatchedFilmsMonth = (films) => {
-  return films.filter((film) => film.viewingDate === `month` && film.isWatched);
+  const monthStartDate = moment(new Date()).subtract(1, `month`).unix();
+  return films.filter((film) => film.alreadyWatched && moment(film.watchingDate).unix() >= monthStartDate);
 };
 
 const getWatchedFilmsYear = (films) => {
-  return films.filter((film) => film.viewingDate === `year` && film.isWatched);
+  const yearStartDate = moment(new Date()).subtract(1, `year`).unix();
+  return films.filter((film) => film.alreadyWatched && moment(film.watchingDate).unix() >= yearStartDate);
 };
 
 const getFilmsByFilter = (films, filterType) => {

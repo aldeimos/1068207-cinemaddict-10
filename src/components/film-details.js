@@ -1,9 +1,15 @@
 import AbstractSmartComponent from "./abstract-smart-component";
 import CommentsComponent from './comments.js';
 import {
+  convertRuntime,
+  convertReleaseDate
+} from '../const.js';
+
+import {
   render,
   RenderPosition,
 } from '../utils/render';
+
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -11,20 +17,23 @@ const createFilmDetailsTemplate = (filmDetail) => {
     description,
     poster,
     genre,
-    fullDuration,
-    releaseDate,
-    rating,
-    subtitle,
+    runtime,
+    date,
+    totalRating,
+    alternativeTitle,
     country,
-    directors,
+    director,
     writers,
     actors,
-    ageRestriction,
+    ageRating,
     comments,
-    toWatch,
-    isWatched,
-    isFavorite,
+    watchList,
+    alreadyWatched,
+    favorite,
   } = filmDetail;
+
+  const releaseDate = convertReleaseDate(date);
+  const convertedRuntime = convertRuntime(runtime);
   return (
     `<section class="film-details" tabindex="0" style="outline: none">
     <form class="film-details__inner" action="" method="get">
@@ -36,25 +45,25 @@ const createFilmDetailsTemplate = (filmDetail) => {
           <div class="film-details__poster">
             <img class="film-details__poster-img" src="${poster}" alt="">
 
-            <p class="film-details__age">${ageRestriction}+</p>
+            <p class="film-details__age">${ageRating}+</p>
           </div>
 
           <div class="film-details__info">
             <div class="film-details__info-head">
               <div class="film-details__title-wrap">
                 <h3 class="film-details__title">${title}</h3>
-                <p class="film-details__title-original">Original: ${subtitle}</p>
+                <p class="film-details__title-original">Original: ${alternativeTitle}</p>
               </div>
 
               <div class="film-details__rating">
-                <p class="film-details__total-rating">${rating}</p>
+                <p class="film-details__total-rating">${totalRating}</p>
               </div>
             </div>
 
             <table class="film-details__table">
               <tr class="film-details__row">
                 <td class="film-details__term">Director</td>
-                <td class="film-details__cell">${directors}</td>
+                <td class="film-details__cell">${director}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Writers</td>
@@ -70,7 +79,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Runtime</td>
-                <td class="film-details__cell">${fullDuration}</td>
+                <td class="film-details__cell">${convertedRuntime}</td>
               </tr>
               <tr class="film-details__row">
                 <td class="film-details__term">Country</td>
@@ -93,13 +102,13 @@ const createFilmDetailsTemplate = (filmDetail) => {
         </div>
 
         <section class="film-details__controls">
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${toWatch ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchList ? `checked` : ``}>
           <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${isWatched ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${alreadyWatched ? `checked` : ``}>
           <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${isFavorite ? `checked` : ``}>
+          <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favorite ? `checked` : ``}>
           <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
         </section>
       </div>
@@ -202,7 +211,8 @@ export default class FilmDetails extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    this._comments = card.comments;
+    this._comments = this._card.commentsList;
+    this.renderComments();
   }
   getTemplate() {
     return createFilmDetailsTemplate(this._card);
@@ -217,6 +227,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   renderComments() {
+    this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this._commentsContainer.innerHTML = ``;
     this._comments.forEach((comment) => {
       render(this._commentsContainer, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND);
@@ -226,10 +237,10 @@ export default class FilmDetails extends AbstractSmartComponent {
 
   _subscribeOnEvents() {
     this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
-      this._card.toWatch = !this._card.toWatch;
+      this._card.watchList = !this._card.watchList;
     });
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
-      this._card.isWatched = !this._card.isWatched;
+      this._card.alreadyWatched = !this._card.alreadyWatched;
       this.showRatingBlock();
     });
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
@@ -248,7 +259,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
   showRatingBlock() {
     const ratingBlock = this.getElement().querySelector(`.form-details__middle-container`);
-    if (this._card.isWatched) {
+    if (this._card.alreadyWatched) {
       ratingBlock.style.display = `block`;
     } else {
       ratingBlock.style.display = `none`;

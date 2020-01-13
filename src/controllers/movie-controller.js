@@ -1,7 +1,7 @@
 import FilmCardDetailsComponent from '../components/film-details';
 import FilmCardComponent from '../components/film-card.js';
+import MovieModel from '../models/movie.js';
 
-import moment from "moment";
 import {
   RenderPosition,
   render,
@@ -13,6 +13,11 @@ const Mode = {
   DEFAULT: `default`,
   DETAILS: `details`,
 };
+
+import {
+  getRandomIntegerFromGap,
+  formatDate
+} from '../utils/common.js';
 
 export default class MovieController {
   constructor(container, onDataChange, onViewChange, filterController) {
@@ -29,7 +34,6 @@ export default class MovieController {
     const oldFilmCard = this._filmCard;
     const oldFilmCardDetails = this._filmCardDetails;
     const siteMainSection = document.querySelector(`main`);
-
     this._filmCard = new FilmCardComponent(card);
     this._filmCardDetails = new FilmCardDetailsComponent(card);
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
@@ -54,12 +58,13 @@ export default class MovieController {
       if (isCombinationPressed) {
         const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
         const newComment = {
-          id: String(new Date() + Math.random()),
-          name: `You`,
-          text: this._filmCardDetails.getElement().querySelector(`textarea`).value,
-          date: moment().startOf().fromNow(),
-          emoji: `./images/emoji/${emojiSrc.value}.png`,
+          id: `${getRandomIntegerFromGap(2700, 2800)}`,
+          author: `You`,
+          comment: this._filmCardDetails.getElement().querySelector(`textarea`).value,
+          date: new Date(),
+          emotion: `${emojiSrc.value}`,
         };
+
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
@@ -84,24 +89,22 @@ export default class MovieController {
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
       evt.preventDefault();
-
-      this._onDataChange(this, card, Object.assign({}, card, {
-        toWatch: !card.toWatch,
-      }));
+      const newCard = MovieModel.clone(card);
+      newCard.watchList = !newCard.watchList;
+      this._onDataChange(this, card, newCard);
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
       evt.preventDefault();
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isWatched: !card.isWatched
-      }));
-      /* this._filterController.updateData(); */
+      const newCard = MovieModel.clone(card);
+      newCard.alreadyWatched = !newCard.alreadyWatched;
+      newCard.watchingDate = newCard.watchingDate ? formatDate(new Date()) : null;
+      this._onDataChange(this, card, newCard);
     });
     this._filmCard.setButtonFavoriteClickHandler((evt) => {
       evt.preventDefault();
-
-      this._onDataChange(this, card, Object.assign({}, card, {
-        isFavorite: !card.isFavorite
-      }));
+      const newCard = MovieModel.clone(card);
+      newCard.favorite = !newCard.favorite;
+      this._onDataChange(this, card, newCard);
     });
 
     if (oldFilmCardDetails && oldFilmCard) {
