@@ -10,6 +10,11 @@ import {
   RenderPosition,
 } from '../utils/render';
 
+import API from '../api';
+
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
+const AUTORIZATION = `Basic jasjHsjaWkSksajasshk0sak`;
+const api = new API(END_POINT, AUTORIZATION);
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -211,6 +216,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
+    console.log(this._card.comments);
     this._comments = this._card.commentsList;
     this.renderComments();
   }
@@ -272,9 +278,12 @@ export default class FilmDetails extends AbstractSmartComponent {
   setDeleteCommentClickHandler() {
     const onDeleteButtonClick = (evt) => {
       evt.preventDefault();
-      this._comments = this._comments.filter((comment) => comment.id !== evt.target.dataset.indexNumber);
+      const indexNumber = evt.target.dataset.indexNumber;
+      this._comments = this._comments.filter((comment) => comment.id !== indexNumber);
       this.renderComments();
       this.rerenderCommentsBlockTitle();
+      api.deleteComment(indexNumber);
+      api.deleteCommentFromMovie(indexNumber);
     };
 
     [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {

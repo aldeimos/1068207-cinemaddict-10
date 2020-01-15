@@ -19,14 +19,16 @@ import {
   formatDate
 } from '../utils/common.js';
 
+
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange, filterController) {
+  constructor(container, onDataChange, onViewChange, filterController, onCommentsChange, onCommentDelete) {
     this._container = container;
     this._filmCard = null;
     this._filmCardDetails = null;
-
     this._onDataChange = onDataChange;
     this._onViewChange = onViewChange;
+    this._onCommentsChange = onCommentsChange;
+    this._onCommentDelete = onCommentDelete;
     this._mode = Mode.DEFAULT;
     this._filterController = filterController;
   }
@@ -68,11 +70,20 @@ export default class MovieController {
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
+        const newCard = MovieModel.clone(card);
+        debugger;
+        newCard.comments.push(newComment.id);
+        this._onCommentsChange(card.id, newComment, newCard);
         this._filmCardDetails.updateCommentsArray(newComment);
         this._filmCardDetails.renderComments();
         this._filmCardDetails.clearForm();
         this._filmCardDetails.rerenderCommentsBlockTitle();
+        /* this._onDataChange(this, card, newCard); */
       }
+      const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
+      document.addEventListener(`keydown`, onEscKeydown);
+      document.addEventListener(`keyup`, onCtrlEnterKeyup);
+      buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
     };
 
     const onFilmInnerClick = () => {
@@ -83,8 +94,9 @@ export default class MovieController {
       document.addEventListener(`keydown`, onEscKeydown);
       document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
-      this._filmCardDetails._subscribeOnEvents();
+      this._filmCardDetails.recoveryListeners();
       this._filmCardDetails.renderComments();
+      /* this.setDeleteButtonHandler(card); */
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -119,4 +131,18 @@ export default class MovieController {
       remove(this._filmCardDetails);
     }
   }
+  /* setDeleteButtonHandler(card) {
+    [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
+      button.addEventListener(`click`, () => {
+        const commentId = button.dataset.indexNumber;
+        const newCard = MovieModel.clone(card);
+        newCard.comments = newCard.comments.filter((itemId) => itemId !== commentId);
+        this._onCommentDelete(newCard.id, newCard);
+      });
+    });
+  } */
 }
+
+// Удаление комментария на сервере
+// 1. Клик на кнопку Delete.
+// 2.
