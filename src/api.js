@@ -60,9 +60,9 @@ const API = class {
   deleteComment(commentId) { // commentId
     return this._load({url: `comments/${commentId}`, method: Method.DELETE});
   }
-  deleteCommentFromMovie(commentId) {
-    return this._load({url: `movies/${commentId}`, method: Method.DELETE});
-  }
+  /* deleteCommentFromMovie(filmId) {
+    return this._load({url: `movies/${filmId}`, method: Method.PUT});
+  } */
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._autorization);
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})

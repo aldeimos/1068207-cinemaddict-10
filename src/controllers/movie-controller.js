@@ -70,15 +70,17 @@ export default class MovieController {
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
-        const newCard = MovieModel.clone(card);
-        debugger;
+        /* debugger; */
+        const detailedCard = this._filmCardDetails.getCard();
+        const newCard = MovieModel.clone(detailedCard);
         newCard.comments.push(newComment.id);
-        this._onCommentsChange(card.id, newComment, newCard);
         this._filmCardDetails.updateCommentsArray(newComment);
         this._filmCardDetails.renderComments();
+        this._onCommentsChange(newCard, newComment);
+        this._onDataChange(this, card, newCard);
         this._filmCardDetails.clearForm();
+        this._filmCardDetails.renderComments();
         this._filmCardDetails.rerenderCommentsBlockTitle();
-        /* this._onDataChange(this, card, newCard); */
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);

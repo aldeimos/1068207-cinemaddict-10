@@ -13,7 +13,7 @@ import {
 import API from '../api';
 
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
-const AUTORIZATION = `Basic jasjHsjaWkSksajasshk0sak`;
+const AUTORIZATION = `Basic asdfjkll123sskl`;
 const api = new API(END_POINT, AUTORIZATION);
 
 const createFilmDetailsTemplate = (filmDetail) => {
@@ -216,8 +216,7 @@ export default class FilmDetails extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    console.log(this._card.comments);
-    this._comments = this._card.commentsList;
+    console.log(this._card.commentsList);
     this.renderComments();
   }
   getTemplate() {
@@ -235,7 +234,8 @@ export default class FilmDetails extends AbstractSmartComponent {
   renderComments() {
     this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this._commentsContainer.innerHTML = ``;
-    this._comments.forEach((comment) => {
+    console.log(this._card.commentsList);
+    this._card.commentsList.forEach((comment) => {
       render(this._commentsContainer, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND);
     });
     this.setDeleteCommentClickHandler();
@@ -279,11 +279,11 @@ export default class FilmDetails extends AbstractSmartComponent {
     const onDeleteButtonClick = (evt) => {
       evt.preventDefault();
       const indexNumber = evt.target.dataset.indexNumber;
-      this._comments = this._comments.filter((comment) => comment.id !== indexNumber);
+      this._card.commentsList = this._card.commentsList.filter((comment) => comment.id !== indexNumber); // объясни пожалуйста, почему тут не работала переприсваивание в виде: this._comments = ...
+      this._card.comments = this._card.comments.filter((commentId) => commentId !== indexNumber); // this._commentsId = ...
       this.renderComments();
       this.rerenderCommentsBlockTitle();
       api.deleteComment(indexNumber);
-      api.deleteCommentFromMovie(indexNumber);
     };
 
     [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
@@ -295,9 +295,12 @@ export default class FilmDetails extends AbstractSmartComponent {
     });
   }
   rerenderCommentsBlockTitle() {
-    this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._comments.length}</span>`;
+    this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._card.comments.length}</span>`;
   }
   updateCommentsArray(comment) {
-    this._comments.push(comment);
+    this._card.commentsList.push(comment);
+  }
+  getCard() {
+    return this._card;
   }
 }
