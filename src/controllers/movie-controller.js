@@ -33,6 +33,7 @@ export default class MovieController {
     this._filterController = filterController;
   }
   render(card) {
+    console.log(card, `Карта заходящая в ререндеринг`);
     const oldFilmCard = this._filmCard;
     const oldFilmCardDetails = this._filmCardDetails;
     const siteMainSection = document.querySelector(`main`);
@@ -70,22 +71,27 @@ export default class MovieController {
         if (newComment.text === `` || newComment.emoji === `./`) {
           return;
         }
-        /* debugger; */
         const detailedCard = this._filmCardDetails.getCard();
         const newCard = MovieModel.clone(detailedCard);
         newCard.comments.push(newComment.id);
-        this._filmCardDetails.updateCommentsArray(newComment);
-        this._filmCardDetails.renderComments();
-        this._onCommentsChange(newCard, newComment);
+        newCard.commentsList = detailedCard.commentsList;
+        newCard.commentsList.push(newComment);
+        this._onCommentsChange(newCard, newComment)
+          .then((response) => {
+            newCard.commentsList = response.comments;
+            /* response.commentsList = newCard.commentsList; */
+            /* this._filmCardDetails.updateCommentsArray(response.commentsList);
+            this._filmCardDetails.renderComments();
+            this._filmCardDetails.rerenderCommentsBlockTitle(); */
+            /* this._filmCardDetails.clearForm(); */
+          });
         this._onDataChange(this, card, newCard);
-        this._filmCardDetails.clearForm();
-        this._filmCardDetails.renderComments();
-        this._filmCardDetails.rerenderCommentsBlockTitle();
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
       document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
+      this._filmCardDetails.recoveryListeners();
     };
 
     const onFilmInnerClick = () => {
@@ -98,7 +104,8 @@ export default class MovieController {
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails.recoveryListeners();
       this._filmCardDetails.renderComments();
-      /* this.setDeleteButtonHandler(card); */
+      this._filmCardDetails.rerenderCommentsBlockTitle();
+      this.setDeleteCommentClickHandler();
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -127,22 +134,45 @@ export default class MovieController {
     } else {
       render(this._container, this._filmCard.getElement(), RenderPosition.BEFOREEND);
     }
+    /* debugger; */
+    this._filmCardDetails.renderComments();
+    this._filmCardDetails.rerenderCommentsBlockTitle();
+    this.setDeleteCommentClickHandler();
+    const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
+    buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
       remove(this._filmCardDetails);
     }
   }
-  /* setDeleteButtonHandler(card) {
-    [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
-      button.addEventListener(`click`, () => {
-        const commentId = button.dataset.indexNumber;
-        const newCard = MovieModel.clone(card);
-        newCard.comments = newCard.comments.filter((itemId) => itemId !== commentId);
-        this._onCommentDelete(newCard.id, newCard);
+  setDeleteCommentClickHandler() {
+    /* debugger; */
+    const onDeleteButtonClick = (evt) => {
+      evt.preventDefault();
+      const card = this._filmCardDetails.getCard();
+      const indexNumber = evt.target.dataset.indexNumber;
+      const newCard = MovieModel.clone(card);
+      newCard.commentsList = card.commentsList.filter((comment) => comment.id !== indexNumber);
+      newCard.comments = card.comments.filter((commentId) => commentId !== indexNumber);
+      this._onCommentDelete(newCard.id, newCard, indexNumber).then((response) => {
+        response.commentsList = newCard.commentsList;
+        this._filmCardDetails.updateCommentsArray(response.commentsList);
+        this._filmCardDetails.rerenderCommentsBlockTitle();
+        this._filmCardDetails.renderComments();
+        this.setDeleteCommentClickHandler();
       });
+      this.setDeleteCommentClickHandler();
+    };
+
+    [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
+      button.removeEventListener(`click`, onDeleteButtonClick);
     });
-  } */
+
+    [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
+      button.addEventListener(`click`, onDeleteButtonClick);
+    });
+  }
 }
 
 // Удаление комментария на сервере
