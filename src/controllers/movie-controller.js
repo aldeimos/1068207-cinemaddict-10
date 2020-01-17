@@ -79,12 +79,7 @@ export default class MovieController {
         this._onCommentsChange(newCard, newComment)
           .then((response) => {
             newCard.commentsList = response.comments;
-            /* response.commentsList = newCard.commentsList; */
-            /* this._filmCardDetails.updateCommentsArray(response.commentsList);
-            this._filmCardDetails.renderComments();
-            this._filmCardDetails.rerenderCommentsBlockTitle(); */
-            /* this._filmCardDetails.clearForm(); */
-          });
+          }).catch(console.log(`it's work`));
         this._onDataChange(this, card, newCard);
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
