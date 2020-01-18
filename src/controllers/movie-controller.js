@@ -79,11 +79,8 @@ export default class MovieController {
         this._onCommentsChange(newCard, newComment)
           .then((response) => {
             newCard.commentsList = response.comments;
-            this._onDataChange(this, card, newCard);
-          }).catch(() => {
-            newCommentTextarea.disabled = false;
-            this.setCommentSendErrorHandler();
           });
+        this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler());
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
@@ -179,6 +176,7 @@ export default class MovieController {
   setCommentSendErrorHandler() {
     const newCommentBlock = this._filmCardDetails.getElement().querySelector(`.film-details__new-comment`);
     const newCommentTextarea = newCommentBlock.querySelector(`.film-details__comment-input`);
+    newCommentTextarea.disabled = false;
     newCommentTextarea.style.border = `1px solid red`;
     newCommentBlock.classList.add(`shake`);
   }
