@@ -148,7 +148,7 @@ export default class PageController {
     this.setFilterStatisticClickHandler();
     this.setFiltersHandler();
   }
-  _onDataChange(movieController, oldData, newData) {
+  _onDataChange(movieController, oldData, newData, errorHandler = this.throwDefaultError) {
     this._api.updateFilm(oldData.id, newData)
       .then((movieModel) => {
         newData.comments = movieModel.comments;
@@ -166,6 +166,8 @@ export default class PageController {
         this.updateStatsComponent();
         this.setFiltersHandler();
         this.setFilterStatisticClickHandler();
+      }).catch(() => {
+        errorHandler();
       });
   }
 
@@ -281,5 +283,8 @@ export default class PageController {
       const filmId = film[`id`];
       film.commentsList = commentsArray[filmId];
     });
+  }
+  throwDefaultError() {
+    throw new Error(`Something goes wrong...`);
   }
 }

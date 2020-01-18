@@ -158,7 +158,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
                 <label class="film-details__user-rating-label" for="rating-8">8</label>
 
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9">
                 <label class="film-details__user-rating-label" for="rating-9">9</label>
 
               </div>
@@ -243,6 +243,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     });
     this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
       this._card.alreadyWatched = !this._card.alreadyWatched;
+      this._card.personalRating = 0;
       this.showRatingBlock();
     });
     this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
@@ -270,30 +271,18 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.getElement().querySelector(`textarea`).value = null;
     this.getElement().querySelector(`.film-details__new-comment-image`).src = ``;
   }
-  /* setDeleteCommentClickHandler() {
-    const onDeleteButtonClick = (evt) => {
-      evt.preventDefault();
-      const indexNumber = evt.target.dataset.indexNumber;
-      this._card.commentsList = this._card.commentsList.filter((comment) => comment.id !== indexNumber);
-      this._card.comments = this._card.comments.filter((commentId) => commentId !== indexNumber);
-      api.deleteComment(indexNumber);
-      this.rerenderCommentsBlockTitle();
-      this.renderComments();
-    };
-
-    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
-      button.removeEventListener(`click`, onDeleteButtonClick);
-    });
-
-    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
-      button.addEventListener(`click`, onDeleteButtonClick);
-    });
-  } */
   rerenderCommentsBlockTitle() {
     this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._card.commentsList.length}</span>`;
   }
   updateCommentsArray(comments) {
     this._card.commentsList = comments;
+  }
+  setRatingValue() {
+    [...this.getElement().querySelectorAll(`.film-details__user-rating-input`)].forEach((button) => {
+      if (parseInt(button.value, 10) === this._card.personalRating) {
+        button.checked = true;
+      }
+    });
   }
   getCard() {
     return this._card;

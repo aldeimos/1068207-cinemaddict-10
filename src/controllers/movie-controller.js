@@ -33,14 +33,12 @@ export default class MovieController {
     this._filterController = filterController;
   }
   render(card) {
-    console.log(card, `Карта заходящая в ререндеринг`);
     const oldFilmCard = this._filmCard;
     const oldFilmCardDetails = this._filmCardDetails;
     const siteMainSection = document.querySelector(`main`);
     this._filmCard = new FilmCardComponent(card);
     this._filmCardDetails = new FilmCardDetailsComponent(card);
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
-
     const onEscKeydown = (evt) => {
       const isEscape = evt.key === `Escape` || evt.key === `Esc`;
       if (isEscape) {
@@ -73,14 +71,19 @@ export default class MovieController {
         }
         const detailedCard = this._filmCardDetails.getCard();
         const newCard = MovieModel.clone(detailedCard);
+        const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
+        newCommentTextarea.disabled = true;
         newCard.comments.push(newComment.id);
         newCard.commentsList = detailedCard.commentsList;
         newCard.commentsList.push(newComment);
         this._onCommentsChange(newCard, newComment)
           .then((response) => {
             newCard.commentsList = response.comments;
-          }).catch(console.log(`it's work`));
-        this._onDataChange(this, card, newCard);
+            this._onDataChange(this, card, newCard);
+          }).catch(() => {
+            newCommentTextarea.disabled = false;
+            this.setCommentSendErrorHandler();
+          });
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
@@ -92,14 +95,15 @@ export default class MovieController {
     const onFilmInnerClick = () => {
       this._onViewChange();
       this._mode = Mode.DETAILS;
+      this._filmCardDetails.getElement().classList.add(`bounce-in-right`);
       render(siteMainSection, this._filmCardDetails.getElement(), RenderPosition.BEFOREEND);
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
       document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
-      this._filmCardDetails.recoveryListeners();
       this._filmCardDetails.renderComments();
       this._filmCardDetails.rerenderCommentsBlockTitle();
+      this._filmCardDetails.showRatingBlock();
       this.setDeleteCommentClickHandler();
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
@@ -113,6 +117,9 @@ export default class MovieController {
       evt.preventDefault();
       const newCard = MovieModel.clone(card);
       newCard.alreadyWatched = !newCard.alreadyWatched;
+      if (!newCard.alreadyWatched) {
+        newCard.personalRating = 0;
+      }
       newCard.watchingDate = newCard.watchingDate ? formatDate(new Date()) : null;
       this._onDataChange(this, card, newCard);
     });
@@ -129,12 +136,14 @@ export default class MovieController {
     } else {
       render(this._container, this._filmCard.getElement(), RenderPosition.BEFOREEND);
     }
-    /* debugger; */
     this._filmCardDetails.renderComments();
     this._filmCardDetails.rerenderCommentsBlockTitle();
+    this._filmCardDetails.setRatingValue();
     this.setDeleteCommentClickHandler();
     const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
     buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
+    this._filmCardDetails.recoveryListeners();
+    this.setPutRatingClickHanlder();
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
@@ -142,7 +151,6 @@ export default class MovieController {
     }
   }
   setDeleteCommentClickHandler() {
-    /* debugger; */
     const onDeleteButtonClick = (evt) => {
       evt.preventDefault();
       const card = this._filmCardDetails.getCard();
@@ -168,8 +176,44 @@ export default class MovieController {
       button.addEventListener(`click`, onDeleteButtonClick);
     });
   }
-}
+  setCommentSendErrorHandler() {
+    const newCommentBlock = this._filmCardDetails.getElement().querySelector(`.film-details__new-comment`);
+    const newCommentTextarea = newCommentBlock.querySelector(`.film-details__comment-input`);
+    newCommentTextarea.style.border = `1px solid red`;
+    newCommentBlock.classList.add(`shake`);
+  }
+  setPutRatingClickHanlder() {
+    const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
+    const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
+    const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
+    const oldCard = this._filmCardDetails.getCard();
+    const onRatingButtonClick = (evt) => {
+      const onRatingSendError = () => {
+        const ratingLabels = ratingBlock.querySelectorAll(`.film-details__user-rating-label`);
+        ratingLabels[(+evt.target.value - 1)].style.background = `red`;
+        ratingBlock.classList.add(`shake`);
 
-// Удаление комментария на сервере
-// 1. Клик на кнопку Delete.
-// 2.
+      };
+      const newCard = MovieModel.clone(oldCard);
+      newCard.personalRating = parseInt(evt.target.value, 10);
+      ratingButtons.forEach((button) => {
+        button.disabled = true;
+      });
+      this._onDataChange(this, oldCard, newCard, onRatingSendError);
+    };
+
+    ratingButtons.forEach((button) => {
+      button.addEventListener(`click`, onRatingButtonClick);
+    });
+
+    const onResetButtonClick = () => {
+      ratingButtons.forEach((button) => {
+        button.checked = false;
+      });
+      const newCard = MovieModel.clone(oldCard);
+      newCard.personalRating = 0;
+      this._onDataChange(this, oldCard, newCard);
+    };
+    resetButton.addEventListener(`click`, onResetButtonClick);
+  }
+}
