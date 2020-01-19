@@ -9,7 +9,6 @@ const Method = {
 
 const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
-    console.log(response.status)
     return response;
   } else {
     throw new Error(`${response.status}: ${response.statusText}`);
@@ -34,7 +33,7 @@ const API = class {
   }
   updateFilm(id, data) {
     return this._load({
-      url: `movieыs/${id}`,
+      url: `movies/${id}`,
       method: Method.PUT,
       body: JSON.stringify(data.toRAW()),
       headers: new Headers({'Content-Type': `application/json`})
