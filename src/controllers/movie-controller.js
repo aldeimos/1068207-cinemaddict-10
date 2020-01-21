@@ -140,7 +140,7 @@ export default class MovieController {
     const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
     buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
     this._filmCardDetails.recoveryListeners();
-    this.setPutRatingClickHanlder();
+    this.setPutRatingClickHandler();
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
@@ -180,7 +180,7 @@ export default class MovieController {
     newCommentTextarea.style.border = `1px solid red`;
     newCommentBlock.classList.add(`shake`);
   }
-  setPutRatingClickHanlder() {
+  setPutRatingClickHandler() {
     const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
     const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
     const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
