@@ -11,12 +11,12 @@ module.exports = {
   devtool: `source-map`,
   devServer: {
     contentBase: path.join(__dirname, `public`),
-    publicPath: `https://localhost:8081`,
+    publicPath: `https://localhost:8082`,
     watchContentBase: true
   },
   plugins: [
     new MomentLocalesPlugin({
-      localesToKeep: [`es-us`],
+      localesToKeep: [`en`],
     }),
   ],
 };

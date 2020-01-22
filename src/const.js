@@ -1,25 +1,5 @@
 import moment from 'moment';
 
-const MAX_DURATION_IN_HOURS = 3;
-const MAX_DURATION_IN_MINUTES = 59;
-
-const COUNTRIES = [`USA`, `Japan`, `Russia`, `China`, `Canada`, `Czech`, `Germany`];
-const MONTHS = [`January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
-const DATES = [`year`, `month`, `week`, `day`];
-
 const FilterType = {
   ALL: `#all`,
   WATCHLIST: `#watchlist`,
@@ -47,14 +27,20 @@ const convertReleaseDate = (date) => {
   return moment(date).format(`MM/DD/YYYY`);
 };
 
+
+const checkUserRank = (int) => {
+  if (int >= 21) {
+    return `Movie Buff`;
+  } else if (int <= 20 && int >= 11) {
+    return `Fan`;
+  }
+  return `Novice`;
+};
+
 export {
-  MAX_DURATION_IN_HOURS,
-  MAX_DURATION_IN_MINUTES,
-  COUNTRIES,
-  MONTHS,
-  DATES,
   FilterType,
   FilterTypeStatistic,
   convertRuntime,
-  convertReleaseDate
+  convertReleaseDate,
+  checkUserRank
 };

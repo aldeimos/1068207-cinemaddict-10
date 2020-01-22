@@ -80,11 +80,12 @@ export default class FilterController {
     });
   }
   switchToFilms(pageControllerHandler, statsHandler) {
-    const allMoviesButton = this._filterComponent.getElement().querySelector(`.main-navigation__item--all-movies`);
-    allMoviesButton.addEventListener(`click`, () => {
-      this._statsButton.classList.remove(ACTIVE_CLASS);
-      pageControllerHandler(); // show
-      statsHandler(); // hide
+    [...this._filterComponent.getElement().querySelectorAll(`.main-navigation__item`)].forEach((button) => {
+      button.addEventListener(`click`, () => {
+        this._statsButton.classList.remove(ACTIVE_CLASS);
+        pageControllerHandler(); // show
+        statsHandler();
+      });
     });
   }
   removeActiveClass() {

@@ -4,15 +4,43 @@ import {
 } from '../utils/filter.js';
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {convertRuntime} from '../const.js';
+import {
+  convertRuntime,
+  checkUserRank
+} from '../const.js';
 
 const genreCounter = (cards, prop) => {
-  const genreArray = cards.filter((card) => card.genre[0] === prop);
-  return genreArray.length;
+  let counter = 0;
+  cards.forEach((card) => {
+    const isContains = card.genre.some((genre) => genre === prop);
+    if (isContains) {
+      counter += 1;
+    }
+    if (card.genre[0] === prop && prop === undefined) {
+      counter += 1;
+    }
+  });
+  return counter;
+};
+
+const countGenres = (cards) => {
+  const genres = {
+    Action: genreCounter(cards, `Action`),
+    Animation: genreCounter(cards, `Animation`),
+    Family: genreCounter(cards, `Family`),
+    Thriller: genreCounter(cards, `Thriller`),
+    SciFi: genreCounter(cards, `Sci-Fi`),
+    Horror: genreCounter(cards, `Horror`),
+    Adventure: genreCounter(cards, `Adventure`),
+    NoGenre: genreCounter(cards, undefined),
+    Comedy: genreCounter(cards, `Comedy`),
+    Drama: genreCounter(cards, `Drama`),
+  };
+  return genres;
 };
 
 
-const createStatisticSectionTemplate = (cards) => {
+const createStatisticSectionTemplate = (cards, userRankCount, genres) => {
   const totalFilms = cards.length;
   let amountTime = 0;
 
@@ -21,30 +49,18 @@ const createStatisticSectionTemplate = (cards) => {
   });
   const convertedRuntime = convertRuntime(amountTime);
 
-  const getMostPopularGenre = () => {
-    const genres = {
-      Action: genreCounter(cards, `Action`),
-      Animation: genreCounter(cards, `Animation`),
-      Family: genreCounter(cards, `Family`),
-      Thriller: genreCounter(cards, `Thriller`),
-      SciFi: genreCounter(cards, `Sci-Fi`),
-      Horror: genreCounter(cards, `Horror`),
-      Adventure: genreCounter(cards, `Adventure`),
-      NoGenre: genreCounter(cards, undefined),
-      Comedy: genreCounter(cards, `Comdedy`),
-      Drama: genreCounter(cards, `Drama`),
-    };
-    const sortedGenres = Object.entries(genres).sort((a, b) => b[1] - a[1]);
+  const getMostPopularGenre = (genresList) => {
+    const sortedGenres = Object.entries(genresList).sort((a, b) => b[1] - a[1]);
     return sortedGenres[0];
   };
 
-  const mostPopularGenre = getMostPopularGenre();
+  const mostPopularGenre = getMostPopularGenre(genres);
 
   return `<section class="statistic">
     <p class="statistic__rank">
       Your rank
       <img class="statistic__img" src="images/bitmap@2x.png" alt="Avatar" width="35" height="35">
-      <span class="statistic__rank-label">Sci-Figther</span>
+      <span class="statistic__rank-label">${checkUserRank(userRankCount.length)}</span>
     </p>
 
     <form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
@@ -94,13 +110,15 @@ export default class Statistics extends AbstractComponent {
     this._activeStatisticFilterType = null;
     this.setFilterType(activeRadioButton);
     this._watchedFilms = getFilmsByFilterStatistic(this._cards, this._activeStatisticFilterType);
+    this._userRankCount = getFilmsByFilterStatistic(this._cards, `all`);
+    this._genres = countGenres(this._watchedFilms);
     this.show = this.show.bind(this);
     this.hide = this.hide.bind(this);
     this.hide();
     this.renderChart();
   }
   getTemplate() {
-    return createStatisticSectionTemplate(this._watchedFilms);
+    return createStatisticSectionTemplate(this._watchedFilms, this._userRankCount, this._genres);
   }
   renderChart() {
     if (this._watchedFilms.length !== 0) {
@@ -112,7 +130,7 @@ export default class Statistics extends AbstractComponent {
           labels: [`Action`, `Animation`, `Family`, `Thriller`, `Sci-Fi`, `Horror`, `Adventure`, `No Genre`, `Comedy`, `Drama`],
           datasets: [{
             label: `Favorite Genre`,
-            data: [genreCounter(this._watchedFilms, `Action`), genreCounter(this._watchedFilms, `Animation`), genreCounter(this._watchedFilms, `Family`), genreCounter(this._watchedFilms, `Thriller`), genreCounter(this._watchedFilms, `Sci-Fi`), genreCounter(this._watchedFilms, `Horror`), genreCounter(this._watchedFilms, `Adventure`), genreCounter(this._watchedFilms, undefined), genreCounter(this._watchedFilms, `Comedy`), genreCounter(this._watchedFilms, `Drama`)],
+            data: [this._genres[`Action`], this._genres[`Animation`], this._genres[`Family`], this._genres[`Thriller`], this._genres[`SciFi`], this._genres[`Horror`], this._genres[`Adventure`], this._genres[`NoGenre`], this._genres[`Comedy`], this._genres[`Drama`]],
             backgroundColor: [
               `rgba(255, 99, 132, 0.2)`,
               `rgba(54, 162, 235, 0.2)`,

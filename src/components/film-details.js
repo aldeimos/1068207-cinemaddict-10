@@ -10,11 +10,8 @@ import {
   RenderPosition,
 } from '../utils/render';
 
-/* import API from '../api';
-
-const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
-const AUTORIZATION = `Basic asdfjkll123sssdkl`;
-const api = new API(END_POINT, AUTORIZATION); */
+const NUMBER_OF_GENRES = 3;
+const DESCRIPTION_CHARACTERS = 139;
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -94,14 +91,14 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <td class="film-details__term">${genre.length === 1 ? `Genre` : `Genres`}</td>
                 <td class="film-details__cell">
                   <span class="film-details__genre">
-                  ${genre.length > 3 ? genre.slice(0, 3).join(`  `) : genre.join(`  `)}
+                  ${genre.length > NUMBER_OF_GENRES ? genre.slice(0, NUMBER_OF_GENRES).join(`  `) : genre.join(`  `)}
                   </span>
                   </td>
               </tr>
             </table>
 
             <p class="film-details__film-description">
-              ${description.slice(0, 139)}…
+              ${description.slice(0, DESCRIPTION_CHARACTERS)}…
             </p>
           </div>
         </div>
@@ -125,11 +122,11 @@ const createFilmDetailsTemplate = (filmDetail) => {
 
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
+              <img src="${poster}" alt="film-poster" class="film-details__user-rating-img">
             </div>
 
             <section class="film-details__user-rating-inner">
-              <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+              <h3 class="film-details__user-rating-title">${title}</h3>
 
               <p class="film-details__user-rating-feelings">How you feel it?</p>
 
@@ -238,16 +235,6 @@ export default class FilmDetails extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
-      this._card.watchList = !this._card.watchList;
-    });
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
-      this._card.alreadyWatched = !this._card.alreadyWatched;
-      this._card.personalRating = 0;
-      this.showRatingBlock();
-    });
-    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
-    this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this.setEmojiClickHandler();
   }
   setEmojiClickHandler() {

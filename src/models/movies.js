@@ -33,9 +33,9 @@ export default class Movies {
       return false;
     }
 
-    const array = this._cards.slice();
-    array[index] = card;
-    this._cards = array;
+    const cardsCopy = this._cards.slice();
+    cardsCopy[index] = card;
+    this._cards = cardsCopy;
 
     return true;
   }

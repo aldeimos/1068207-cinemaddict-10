@@ -41,14 +41,7 @@ const API = class {
       .then((response) => response.json())
       .then(Movie.parseMovie);
   }
-  updateFilmComments(id, data) {
-    return this._load({
-      url: `movies/${id}`,
-      method: Method.PUT,
-      body: JSON.stringify(data.toRAW()),
-      headers: new Headers({'Content-Type': `application/json`})
-    });
-  }
+
   createComment(filmId, comment) {
     return this._load({
       url: `comments/${filmId}`,
@@ -58,12 +51,10 @@ const API = class {
     })
       .then((response) => response.json());
   }
-  deleteComment(commentId) { // commentId
+  deleteComment(commentId) {
     return this._load({url: `comments/${commentId}`, method: Method.DELETE});
   }
-  /* deleteCommentFromMovie(filmId) {
-    return this._load({url: `movies/${filmId}`, method: Method.PUT});
-  } */
+
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
     headers.append(`Authorization`, this._autorization);
     return fetch(`${this._endPoint}/${url}`, {method, body, headers})

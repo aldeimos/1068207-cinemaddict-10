@@ -50,8 +50,9 @@ export default class MovieController {
 
     const onButtonCloseClick = () => {
       remove(this._filmCardDetails);
-      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
       document.removeEventListener(`keydown`, onEscKeydown);
+      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
+      this.setPutRatingClickHanlder();
     };
 
     const onCtrlEnterKeyup = (evt) => {
@@ -72,15 +73,16 @@ export default class MovieController {
         const detailedCard = this._filmCardDetails.getCard();
         const newCard = MovieModel.clone(detailedCard);
         const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
-        newCommentTextarea.disabled = true;
         newCard.comments.push(newComment.id);
         newCard.commentsList = detailedCard.commentsList;
         newCard.commentsList.push(newComment);
-        this._onCommentsChange(newCard, newComment)
+        this._onCommentsChange(newCard, newComment, this.setCommentSendErrorHandler.bind(this))
           .then((response) => {
             newCard.commentsList = response.comments;
+            newCommentTextarea.disabled = true;
           });
-        this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler());
+        /* debugger; */
+        this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler.bind(this));
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
       document.addEventListener(`keydown`, onEscKeydown);
@@ -94,14 +96,16 @@ export default class MovieController {
       this._mode = Mode.DETAILS;
       this._filmCardDetails.getElement().classList.add(`bounce-in-right`);
       render(siteMainSection, this._filmCardDetails.getElement(), RenderPosition.BEFOREEND);
+      this.setPutRatingClickHanlder();
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
-      document.addEventListener(`keydown`, onEscKeydown);
-      document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails.renderComments();
       this._filmCardDetails.rerenderCommentsBlockTitle();
+      this.setFilmDetailsButtonClick(card);
       this._filmCardDetails.showRatingBlock();
       this.setDeleteCommentClickHandler();
+      document.addEventListener(`keydown`, onEscKeydown);
+      document.addEventListener(`keyup`, onCtrlEnterKeyup);
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -111,6 +115,7 @@ export default class MovieController {
       this._onDataChange(this, card, newCard);
     });
     this._filmCard.setButtonWatchedClickHandler((evt) => {
+
       evt.preventDefault();
       const newCard = MovieModel.clone(card);
       newCard.alreadyWatched = !newCard.alreadyWatched;
@@ -140,7 +145,8 @@ export default class MovieController {
     const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
     buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
     this._filmCardDetails.recoveryListeners();
-    this.setPutRatingClickHanlder();
+    this.setFilmDetailsButtonClick(card);
+    this._filmCardDetails.showRatingBlock();
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
@@ -181,10 +187,17 @@ export default class MovieController {
     newCommentBlock.classList.add(`shake`);
   }
   setPutRatingClickHanlder() {
-    const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
-    const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
-    const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
     const oldCard = this._filmCardDetails.getCard();
+    const ratingButtons = [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__user-rating-input`)];
+    const onResetButtonClick = () => {
+      ratingButtons.forEach((button) => {
+        button.checked = false;
+      });
+      const newCard = MovieModel.clone(oldCard);
+      newCard.personalRating = 0;
+      this._onDataChange(this, oldCard, newCard);
+    };
+
     const onRatingButtonClick = (evt) => {
       const onRatingSendError = () => {
         const ratingLabels = ratingBlock.querySelectorAll(`.film-details__user-rating-label`);
@@ -200,18 +213,31 @@ export default class MovieController {
       this._onDataChange(this, oldCard, newCard, onRatingSendError);
     };
 
+    const ratingBlock = this._filmCardDetails.getElement().querySelector(`.film-details__user-wrap`);
+    const resetButton = this._filmCardDetails.getElement().querySelector(`.film-details__watched-reset`);
+
     ratingButtons.forEach((button) => {
       button.addEventListener(`click`, onRatingButtonClick);
     });
-
-    const onResetButtonClick = () => {
-      ratingButtons.forEach((button) => {
-        button.checked = false;
-      });
-      const newCard = MovieModel.clone(oldCard);
-      newCard.personalRating = 0;
-      this._onDataChange(this, oldCard, newCard);
-    };
     resetButton.addEventListener(`click`, onResetButtonClick);
+  }
+
+  setFilmDetailsButtonClick(card) {
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.watchList = !newCard.watchList;
+      this._onDataChange(this, card, newCard);
+    });
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.alreadyWatched = !newCard.alreadyWatched;
+      newCard.personalRating = 0;
+      this._onDataChange(this, card, newCard);
+    });
+    this._filmCardDetails.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {
+      const newCard = MovieModel.clone(card);
+      newCard.favorite = !newCard.favorite;
+      this._onDataChange(this, card, newCard);
+    });
   }
 }
