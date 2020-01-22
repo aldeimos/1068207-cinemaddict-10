@@ -10,6 +10,8 @@ import {
   RenderPosition,
 } from '../utils/render';
 
+const NUMBER_OF_GENRES = 3;
+const DESCRIPTION_CHARACTERS = 139;
 
 const createFilmDetailsTemplate = (filmDetail) => {
   const {
@@ -89,14 +91,14 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <td class="film-details__term">${genre.length === 1 ? `Genre` : `Genres`}</td>
                 <td class="film-details__cell">
                   <span class="film-details__genre">
-                  ${genre.length > 3 ? genre.slice(0, 3).join(`  `) : genre.join(`  `)}
+                  ${genre.length > NUMBER_OF_GENRES ? genre.slice(0, NUMBER_OF_GENRES).join(`  `) : genre.join(`  `)}
                   </span>
                   </td>
               </tr>
             </table>
 
             <p class="film-details__film-description">
-              ${description.slice(0, 139)}…
+              ${description.slice(0, DESCRIPTION_CHARACTERS)}…
             </p>
           </div>
         </div>
@@ -120,11 +122,11 @@ const createFilmDetailsTemplate = (filmDetail) => {
 
           <div class="film-details__user-score">
             <div class="film-details__user-rating-poster">
-              <img src="./images/posters/the-great-flamarion.jpg" alt="film-poster" class="film-details__user-rating-img">
+              <img src="${poster}" alt="film-poster" class="film-details__user-rating-img">
             </div>
 
             <section class="film-details__user-rating-inner">
-              <h3 class="film-details__user-rating-title">The Great Flamarion</h3>
+              <h3 class="film-details__user-rating-title">${title}</h3>
 
               <p class="film-details__user-rating-feelings">How you feel it?</p>
 
@@ -153,7 +155,7 @@ const createFilmDetailsTemplate = (filmDetail) => {
                 <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="8" id="rating-8">
                 <label class="film-details__user-rating-label" for="rating-8">8</label>
 
-                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9" checked>
+                <input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="9" id="rating-9">
                 <label class="film-details__user-rating-label" for="rating-9">9</label>
 
               </div>
@@ -211,8 +213,6 @@ export default class FilmDetails extends AbstractSmartComponent {
   constructor(card) {
     super();
     this._card = card;
-    this._comments = this._card.commentsList;
-    this.renderComments();
   }
   getTemplate() {
     return createFilmDetailsTemplate(this._card);
@@ -229,22 +229,12 @@ export default class FilmDetails extends AbstractSmartComponent {
   renderComments() {
     this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this._commentsContainer.innerHTML = ``;
-    this._comments.forEach((comment) => {
+    this._card.commentsList.forEach((comment) => {
       render(this._commentsContainer, new CommentsComponent(comment).getElement(), RenderPosition.BEFOREEND);
     });
-    this.setDeleteCommentClickHandler();
   }
 
   _subscribeOnEvents() {
-    this.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
-      this._card.watchList = !this._card.watchList;
-    });
-    this.getElement().querySelector(`.film-details__control-label--watched`).addEventListener(`click`, () => {
-      this._card.alreadyWatched = !this._card.alreadyWatched;
-      this.showRatingBlock();
-    });
-    this.getElement().querySelector(`.film-details__control-label--favorite`).addEventListener(`click`, () => {});
-    this._commentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this.setEmojiClickHandler();
   }
   setEmojiClickHandler() {
@@ -255,7 +245,6 @@ export default class FilmDetails extends AbstractSmartComponent {
         emojiContainer.style.width = `100%`;
       });
     });
-    this.showRatingBlock();
   }
   showRatingBlock() {
     const ratingBlock = this.getElement().querySelector(`.form-details__middle-container`);
@@ -269,26 +258,20 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.getElement().querySelector(`textarea`).value = null;
     this.getElement().querySelector(`.film-details__new-comment-image`).src = ``;
   }
-  setDeleteCommentClickHandler() {
-    const onDeleteButtonClick = (evt) => {
-      evt.preventDefault();
-      this._comments = this._comments.filter((comment) => comment.id !== evt.target.dataset.indexNumber);
-      this.renderComments();
-      this.rerenderCommentsBlockTitle();
-    };
-
-    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
-      button.removeEventListener(`click`, onDeleteButtonClick);
-    });
-
-    [...this.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
-      button.addEventListener(`click`, onDeleteButtonClick);
-    });
-  }
   rerenderCommentsBlockTitle() {
-    this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._comments.length}</span>`;
+    this.getElement().querySelector(`.film-details__comments-title`).innerHTML = `Comments <span class="film-details__comments-count">${this._card.commentsList.length}</span>`;
   }
-  updateCommentsArray(comment) {
-    this._comments.push(comment);
+  updateCommentsArray(comments) {
+    this._card.commentsList = comments;
+  }
+  setRatingValue() {
+    [...this.getElement().querySelectorAll(`.film-details__user-rating-input`)].forEach((button) => {
+      if (parseInt(button.value, 10) === this._card.personalRating) {
+        button.checked = true;
+      }
+    });
+  }
+  getCard() {
+    return this._card;
   }
 }

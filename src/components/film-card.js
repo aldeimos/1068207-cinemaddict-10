@@ -1,6 +1,9 @@
 import AbstractComponent from "./abstract-component";
 import {convertRuntime, convertReleaseDate} from '../const.js';
 
+const NUMBER_OF_GENRES = 2;
+const DESCRIPTION_CHARACTERS = 39;
+
 const createFilmCardTemplate = (card) => {
   const {
     title,
@@ -24,10 +27,10 @@ const createFilmCardTemplate = (card) => {
       <p class="film-card__info">
         <span class="film-card__year">${releaseDate}</span>
         <span class="film-card__duration">${convertedRuntime}</span>
-        <span class="film-card__genre">${genre.slice(0, 2)}</span>
+        <span class="film-card__genre">${genre.slice(0, NUMBER_OF_GENRES)}</span>
       </p>
       <img src="${poster}" alt="" class="film-card__poster">
-      <p class="film-card__description">${description.slice(0, 39)}…</p>
+      <p class="film-card__description">${description.slice(0, DESCRIPTION_CHARACTERS)}…</p>
       <a class="film-card__comments">${comments.length} comments</a>
       <form class="film-card__controls">
         <button class="${watchList ? `film-card__controls-item--active ` : ``}film-card__controls-item button film-card__controls-item--add-to-watchlist">Add to watchlist</button>
@@ -46,8 +49,8 @@ export default class FilmCard extends AbstractComponent {
   getTemplate() {
     return createFilmCardTemplate(this._card);
   }
-  setFilmInnersClickHandlers(array, handler) {
-    for (let item of array) {
+  setFilmInnersClickHandlers(filmCardParts, handler) {
+    for (const item of filmCardParts) {
       item.addEventListener(`click`, handler);
     }
   }

@@ -1,13 +1,6 @@
 import AbstractComponent from "./abstract-component";
-
-const checkUserRank = (int) => {
-  if (int >= 21) {
-    return `Movie Buff`;
-  } else if (int <= 20 && int >= 11) {
-    return `Fan`;
-  }
-  return `Novice`;
-};
+import {getWatchedFilms} from '../utils/filter.js';
+import {checkUserRank} from '../const.js';
 
 
 const createUserProfileTemplate = (watchedMovies) => {
@@ -22,9 +15,9 @@ const createUserProfileTemplate = (watchedMovies) => {
 export default class UserProfile extends AbstractComponent {
   constructor(watchedMovies) {
     super();
-    this._movieAmount = watchedMovies;
+    this._movieAmount = getWatchedFilms(watchedMovies);
   }
   getTemplate() {
-    return createUserProfileTemplate(this._movieAmount);
+    return createUserProfileTemplate(this._movieAmount.length);
   }
 }
