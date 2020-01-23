@@ -19,7 +19,7 @@ import API from './api.js';
 
 
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
-const AUTORIZATION = `Basic ${String(new Date())}`;
+const AUTORIZATION = `Basic sadj1231lksalls`;
 
 const api = new API(END_POINT, AUTORIZATION);
 const moviesModel = new MoviesModel();

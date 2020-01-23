@@ -39,20 +39,22 @@ export default class MovieController {
     this._filmCard = new FilmCardComponent(card);
     this._filmCardDetails = new FilmCardDetailsComponent(card);
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
+    const onButtonCloseClick = () => {
+      remove(this._filmCardDetails);
+      document.removeEventListener(`keydown`, onEscKeydown);
+      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
+      console.log(`Обработчики удалились`);
+      /* this.setPutRatingClickHanlder(); */
+    };
+
     const onEscKeydown = (evt) => {
       const isEscape = evt.key === `Escape` || evt.key === `Esc`;
       if (isEscape) {
         remove(this._filmCardDetails);
         document.removeEventListener(`keydown`, onEscKeydown);
         document.removeEventListener(`keyup`, onCtrlEnterKeyup);
+        console.log(`Обработчики удалились`);
       }
-    };
-
-    const onButtonCloseClick = () => {
-      remove(this._filmCardDetails);
-      document.removeEventListener(`keydown`, onEscKeydown);
-      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
-      this.setPutRatingClickHanlder();
     };
 
     const onCtrlEnterKeyup = (evt) => {
@@ -85,8 +87,6 @@ export default class MovieController {
         this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler.bind(this));
       }
       const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
-      document.addEventListener(`keydown`, onEscKeydown);
-      document.addEventListener(`keyup`, onCtrlEnterKeyup);
       buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
       this._filmCardDetails.recoveryListeners();
     };
@@ -106,6 +106,7 @@ export default class MovieController {
       this.setDeleteCommentClickHandler();
       document.addEventListener(`keydown`, onEscKeydown);
       document.addEventListener(`keyup`, onCtrlEnterKeyup);
+      console.log(`Обработчик добавился по клику`);
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -221,6 +222,7 @@ export default class MovieController {
     });
     resetButton.addEventListener(`click`, onResetButtonClick);
   }
+
 
   setFilmDetailsButtonClick(card) {
     this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
