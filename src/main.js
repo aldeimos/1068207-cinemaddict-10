@@ -15,11 +15,12 @@ import MoviesModel from './models/movies.js';
 import {
   SortForm
 } from './components/sort-form.js';
+import nanoid from 'nanoid';
 import API from './api.js';
 
 
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict`;
-const AUTORIZATION = `Basic sadj1231lksalls`;
+const AUTORIZATION = `Basic ${nanoid()}`;
 
 const api = new API(END_POINT, AUTORIZATION);
 const moviesModel = new MoviesModel();

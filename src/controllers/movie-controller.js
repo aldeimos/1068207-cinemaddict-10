@@ -31,6 +31,8 @@ export default class MovieController {
     this._onCommentDelete = onCommentDelete;
     this._mode = Mode.DEFAULT;
     this._filterController = filterController;
+    this._onEscKeyDown = this.onEscKeydown.bind(this);
+    this._onCtrlEnterKeyup = this.onCtrlEnterKeyup.bind(this);
   }
   render(card) {
     const oldFilmCard = this._filmCard;
@@ -39,56 +41,11 @@ export default class MovieController {
     this._filmCard = new FilmCardComponent(card);
     this._filmCardDetails = new FilmCardDetailsComponent(card);
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
+
     const onButtonCloseClick = () => {
       remove(this._filmCardDetails);
-      document.removeEventListener(`keydown`, onEscKeydown);
-      document.removeEventListener(`keyup`, onCtrlEnterKeyup);
-      console.log(`Обработчики удалились`);
-      /* this.setPutRatingClickHanlder(); */
-    };
-
-    const onEscKeydown = (evt) => {
-      const isEscape = evt.key === `Escape` || evt.key === `Esc`;
-      if (isEscape) {
-        remove(this._filmCardDetails);
-        document.removeEventListener(`keydown`, onEscKeydown);
-        document.removeEventListener(`keyup`, onCtrlEnterKeyup);
-        console.log(`Обработчики удалились`);
-      }
-    };
-
-    const onCtrlEnterKeyup = (evt) => {
-      const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
-      if (isCombinationPressed) {
-        const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
-        const newComment = {
-          id: `${getRandomIntegerFromGap(2700, 2800)}`,
-          author: `You`,
-          comment: this._filmCardDetails.getElement().querySelector(`textarea`).value,
-          date: new Date(),
-          emotion: `${emojiSrc.value}`,
-        };
-
-        if (newComment.text === `` || newComment.emoji === `./`) {
-          return;
-        }
-        const detailedCard = this._filmCardDetails.getCard();
-        const newCard = MovieModel.clone(detailedCard);
-        const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
-        newCard.comments.push(newComment.id);
-        newCard.commentsList = detailedCard.commentsList;
-        newCard.commentsList.push(newComment);
-        this._onCommentsChange(newCard, newComment, this.setCommentSendErrorHandler.bind(this))
-          .then((response) => {
-            newCard.commentsList = response.comments;
-            newCommentTextarea.disabled = true;
-          });
-        /* debugger; */
-        this._onDataChange(this, card, newCard, this.setCommentSendErrorHandler.bind(this));
-      }
-      const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
-      buttonCloseDetails.addEventListener(`click`, onButtonCloseClick);
-      this._filmCardDetails.recoveryListeners();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
     };
 
     const onFilmInnerClick = () => {
@@ -104,9 +61,8 @@ export default class MovieController {
       this.setFilmDetailsButtonClick(card);
       this._filmCardDetails.showRatingBlock();
       this.setDeleteCommentClickHandler();
-      document.addEventListener(`keydown`, onEscKeydown);
-      document.addEventListener(`keyup`, onCtrlEnterKeyup);
-      console.log(`Обработчик добавился по клику`);
+      document.addEventListener(`keydown`, this._onEscKeyDown);
+      document.addEventListener(`keyup`, this._onCtrlEnterKeyup);
     };
     this._filmCard.setFilmInnersClickHandlers(filmCardParts, onFilmInnerClick);
     this._filmCard.setButtonWatchlistClickHandler((evt) => {
@@ -223,7 +179,6 @@ export default class MovieController {
     resetButton.addEventListener(`click`, onResetButtonClick);
   }
 
-
   setFilmDetailsButtonClick(card) {
     this._filmCardDetails.getElement().querySelector(`.film-details__control-label--watchlist`).addEventListener(`click`, () => {
       const newCard = MovieModel.clone(card);
@@ -241,5 +196,45 @@ export default class MovieController {
       newCard.favorite = !newCard.favorite;
       this._onDataChange(this, card, newCard);
     });
+  }
+  onEscKeydown(evt) {
+    const isEscape = evt.key === `Escape` || evt.key === `Esc`;
+    if (isEscape) {
+      remove(this._filmCardDetails);
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
+    }
+  }
+  onCtrlEnterKeyup(evt) {
+    const isCombinationPressed = (evt.key === `Enter` && evt.ctrlKey);
+    if (isCombinationPressed) {
+      const emojiSrc = this._filmCardDetails.getElement().querySelector(`.film-details__emoji-item:checked`);
+      const newComment = {
+        id: `${getRandomIntegerFromGap(2700, 2800)}`,
+        author: `You`,
+        comment: this._filmCardDetails.getElement().querySelector(`textarea`).value,
+        date: new Date(),
+        emotion: `${emojiSrc.value}`,
+      };
+
+      if (newComment.text === `` || newComment.emoji === `./`) {
+        return;
+      }
+      const detailedCard = this._filmCardDetails.getCard();
+      const newCard = MovieModel.clone(detailedCard);
+      const newCommentTextarea = this._filmCardDetails.getElement().querySelector(`.film-details__comment-input`);
+      newCard.comments.push(newComment.id);
+      newCard.commentsList = detailedCard.commentsList;
+      newCard.commentsList.push(newComment);
+      this._onCommentsChange(newCard, newComment, this.setCommentSendErrorHandler.bind(this))
+        .then((response) => {
+          newCard.commentsList = response.comments;
+          newCommentTextarea.disabled = true;
+        });
+      this._onDataChange(this, detailedCard, newCard, this.setCommentSendErrorHandler.bind(this));
+    }
+    const buttonCloseDetails = this._filmCardDetails.getElement().querySelector(`.film-details__close-btn`);
+    buttonCloseDetails.addEventListener(`click`, this.testClick);
+    this._filmCardDetails.recoveryListeners();
   }
 }
