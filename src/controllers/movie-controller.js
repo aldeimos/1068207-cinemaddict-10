@@ -31,10 +31,8 @@ export default class MovieController {
     this._onCommentDelete = onCommentDelete;
     this._mode = Mode.DEFAULT;
     this._filterController = filterController;
-    this._detailsIsOpened = false;
     this._onEscKeyDown = this.onEscKeydown.bind(this);
     this._onCtrlEnterKeyup = this.onCtrlEnterKeyup.bind(this);
-    this._detailsIsOpened = false;
   }
   render(card) {
     const oldFilmCard = this._filmCard;
@@ -45,7 +43,6 @@ export default class MovieController {
     const filmCardParts = this._filmCard.getElement().querySelectorAll(`.film-card__poster, .film-card__title, .film-card__comments`);
 
     const onButtonCloseClick = () => {
-      this._detailsIsOpened = false;
       remove(this._filmCardDetails);
       document.removeEventListener(`keydown`, this._onEscKeyDown);
       document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
@@ -241,4 +238,3 @@ export default class MovieController {
     this._filmCardDetails.recoveryListeners();
   }
 }
-
