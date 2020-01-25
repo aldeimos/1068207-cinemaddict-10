@@ -8,7 +8,7 @@ const FilterType = {
 };
 
 const MOVIE_BUFF_RANK = 21;
-const FAN_RAN_MAX = 20;
+const FAN_RANK_MAX = 20;
 const FAN_RANK_MIN = 11;
 
 const FilterTypeStatistic = {
@@ -35,7 +35,7 @@ const convertReleaseDate = (date) => {
 const checkUserRank = (int) => {
   if (int >= MOVIE_BUFF_RANK) {
     return `Movie Buff`;
-  } else if (int <= FAN_RAN_MAX && int >= FAN_RANK_MIN) {
+  } else if (int <= FAN_RANK_MAX && int >= FAN_RANK_MIN) {
     return `Fan`;
   }
   return `Novice`;
