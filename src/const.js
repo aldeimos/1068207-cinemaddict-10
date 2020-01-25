@@ -7,6 +7,10 @@ const FilterType = {
   FAVORITES: `#favorites`,
 };
 
+const MOVIE_BUFF_RANK = 21;
+const FAN_RAN_MAX = 20;
+const FAN_RANK_MIN = 11;
+
 const FilterTypeStatistic = {
   ALL: `all`,
   TODAY: `today`,
@@ -29,9 +33,9 @@ const convertReleaseDate = (date) => {
 
 
 const checkUserRank = (int) => {
-  if (int >= 21) {
+  if (int >= MOVIE_BUFF_RANK) {
     return `Movie Buff`;
-  } else if (int <= 20 && int >= 11) {
+  } else if (int <= FAN_RAN_MAX && int >= FAN_RANK_MIN) {
     return `Fan`;
   }
   return `Novice`;

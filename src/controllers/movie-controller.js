@@ -61,6 +61,8 @@ export default class MovieController {
       this.setFilmDetailsButtonClick(card);
       this._filmCardDetails.showRatingBlock();
       this.setDeleteCommentClickHandler();
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
       document.addEventListener(`keydown`, this._onEscKeyDown);
       document.addEventListener(`keyup`, this._onCtrlEnterKeyup);
     };
@@ -107,6 +109,8 @@ export default class MovieController {
   }
   setDefaultView() {
     if (this._mode !== Mode.DEFAULT) {
+      document.removeEventListener(`keydown`, this._onEscKeyDown);
+      document.removeEventListener(`keyup`, this._onCtrlEnterKeyup);
       remove(this._filmCardDetails);
     }
   }
@@ -125,7 +129,7 @@ export default class MovieController {
         this._filmCardDetails.renderComments();
         this.setDeleteCommentClickHandler();
       });
-      this.setDeleteCommentClickHandler();
+      this._onDataChange(this, card, newCard);
     };
 
     [...this._filmCardDetails.getElement().querySelectorAll(`.film-details__comment-delete`)].forEach((button) => {
@@ -226,10 +230,10 @@ export default class MovieController {
       newCard.comments.push(newComment.id);
       newCard.commentsList = detailedCard.commentsList;
       newCard.commentsList.push(newComment);
+      newCommentTextarea.disabled = true;
       this._onCommentsChange(newCard, newComment, this.setCommentSendErrorHandler.bind(this))
         .then((response) => {
           newCard.commentsList = response.comments;
-          newCommentTextarea.disabled = true;
         });
       this._onDataChange(this, detailedCard, newCard, this.setCommentSendErrorHandler.bind(this));
     }
