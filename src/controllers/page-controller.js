@@ -22,7 +22,9 @@ import {
 } from '../utils/render';
 
 const EXTRA_LIST_AMOUNT_CARDS = 2;
-let startAmountCards = 5;
+const PRIMARY_CARDS_AMOUNT = 5;
+
+let startAmountCards = PRIMARY_CARDS_AMOUNT;
 
 const renderCards = (filmListContainer, cards, onDataChange, onViewChange, filterController, moviesModel, onCommentsChange, onCommentDelete) => {
   const comments = moviesModel.getComments();
@@ -257,6 +259,7 @@ export default class PageController {
         this._topRatedComponent.getElement(),
         RenderPosition.BEFOREEND
     );
+
     const topRatedFilmsContainer = document.querySelector(`.films-list--extra-rated .films-list__container`);
     const topRatedFilms = this.sortByStat(movies, `totalRating`);
     const lowRatingFilms = topRatedFilms.filter((it) => parseInt(it.totalRating, 10) === 0);
@@ -264,7 +267,8 @@ export default class PageController {
       remove(topRatedFilmsContainer);
       return;
     }
-    renderCards(
+
+    const topRatedCards = renderCards(
         topRatedFilmsContainer,
         topRatedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS),
         this._onDataChange,
@@ -274,6 +278,7 @@ export default class PageController {
         this._onCommentsChange,
         this._onCommentDelete
     );
+    this._showedCardControllers = this._showedCardControllers.concat(topRatedCards);
   }
 
   renderMostCommentedFilms(movies) {
@@ -291,7 +296,7 @@ export default class PageController {
       remove(mostCommentedFilmsContainer);
       return;
     }
-    renderCards(
+    const mosCommentedCards = renderCards(
         mostCommentedFilmsContainer,
         mostCommentedFilms.slice(0, EXTRA_LIST_AMOUNT_CARDS),
         this._onDataChange,
@@ -301,6 +306,7 @@ export default class PageController {
         this._onCommentsChange,
         this._onCommentDelete
     );
+    this._showedCardControllers = this._showedCardControllers.concat(mosCommentedCards);
   }
 
   sortByStat(films, prop) {
